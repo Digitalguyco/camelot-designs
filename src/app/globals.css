@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --parchment: #17150f;
+  --ink: #f1ede3;
+  --stone: #2a2620;
+  --gold: #c9a35a;
+  --card: #1f1c15;
+  --line: rgba(241, 237, 227, 0.14);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-parchment: var(--parchment);
+  --color-ink: var(--ink);
+  --color-stone: var(--stone);
+  --color-gold: var(--gold);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --font-sans: var(--font-work-sans);
+  --font-serif: var(--font-fraunces);
+  --font-mono: var(--font-plex-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Atelier tag: small mono caption used as a recurring signature motif
+   (fig. numbers, material notes, SKUs, read-time) — a nod to the
+   spec labels used to annotate bespoke furnishings. */
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hairline {
+  border-color: var(--line);
+}
+
+/* Input surface: a real field, not a line on matching background */
+.field {
+  background: var(--card);
+  border: 1px solid rgba(241, 237, 227, 0.18);
+  color: var(--ink);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 163, 90, 0.2);
+}
+
+.field::placeholder {
+  color: rgba(241, 237, 227, 0.35);
+}
+
+/* Primary action: solid fill so it visibly outranks secondary links */
+.btn-primary {
+  background: var(--gold);
+  color: var(--parchment);
+  border: 1px solid var(--gold);
+}
+
+.btn-primary:hover {
+  background: #ddb975;
+  border-color: #ddb975;
+}
+
+/* Hints that the mobile nav scrolls horizontally, without JS */
+.scroll-fade {
+  mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Rich-text editor (admin) and rendered blog body share this look. */
+.prose-editor :where(h2, h3) {
+  font-family: var(--font-serif);
+  margin-top: 1.25em;
+  margin-bottom: 0.4em;
+}
+.prose-editor h2 {
+  font-size: 1.4rem;
+}
+.prose-editor h3 {
+  font-size: 1.15rem;
+}
+.prose-editor p {
+  margin-bottom: 1em;
+  line-height: 1.7;
+}
+.prose-editor ul,
+.prose-editor ol {
+  margin: 0 0 1em 1.25em;
+  line-height: 1.7;
+}
+.prose-editor ul {
+  list-style: disc;
+}
+.prose-editor ol {
+  list-style: decimal;
+}
+.prose-editor a {
+  color: var(--gold);
+  text-decoration: underline;
+}
+.prose-editor .ProseMirror {
+  outline: none;
+  min-height: 200px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
