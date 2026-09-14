@@ -8,14 +8,25 @@ file — no separate DB service to install or manage.
 ```bash
 # Node (use whatever version-manager you prefer; this needs Node 20+)
 
+# Build tools — better-sqlite3 compiles a native addon on install
+sudo apt install build-essential python3
+
 # PM2 (process manager) and Nginx
 sudo npm install -g pm2
 sudo apt install nginx certbot python3-certbot-nginx
+
+# Swap — recommended on anything under ~2GB RAM, `next build` is memory-hungry
+sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # Persistent storage — outside the app directory so redeploys never touch it
 sudo mkdir -p /var/www/camelot-data /var/www/camelot-uploads
 sudo chown $USER /var/www/camelot-data /var/www/camelot-uploads
 ```
+
+Note: image uploads are processed with Jimp (pure JS), not sharp — some budget VPS
+hosts run older virtualized CPUs that sharp's prebuilt binaries refuse to load on.
 
 Copy `deploy/nginx.example.conf` to `/etc/nginx/sites-available/camelot-designs.com`, adjust the
 paths for where you clone this repo, symlink it into `sites-enabled`, then run
@@ -25,7 +36,7 @@ paths for where you clone this repo, symlink it into `sites-enabled`, then run
 
 ```bash
 git clone <your-repo-url> /var/www/camelot-designs
-cd /var/www/camelot-designs/nextjs-app
+cd /var/www/camelot-designs
 npm ci
 
 cp .env.example .env
@@ -52,7 +63,7 @@ Visit `https://camelot-designs.com/admin/login` and sign in with `SEED_ADMIN_EMA
 ## 3. Redeploying after changes
 
 ```bash
-cd /var/www/camelot-designs/nextjs-app
+cd /var/www/camelot-designs
 git pull
 npm ci
 npm run db:migrate     # no-op if there's no new migration
