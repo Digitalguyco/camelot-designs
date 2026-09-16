@@ -160,3 +160,13 @@ body {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* Belt-and-braces for Reveal: if there's no scripting (JS disabled), the
+   IntersectionObserver that reveals it never runs — force it visible
+   rather than leaving it permanently faded out. */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

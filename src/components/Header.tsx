@@ -36,10 +36,9 @@ export default function Header() {
 
   return (
     <>
-      {/* Transparent, floating over the page rather than a solid bar — the
-          studio's original header had no fill and no border, just the logo
-          and nav sitting on the dark ground. */}
-      <header className="sticky top-0 z-50 bg-transparent">
+      {/* Floating over the page rather than a solid bar, but blurred so it
+          reads as a surface rather than plain see-through text over content. */}
+      <header className="sticky top-0 z-50 bg-parchment/30 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
           <Link href="/" className="flex shrink-0 items-center gap-3">
             <Image src="/images/brand/monogram.png" alt="" width={40} height={31} priority />
