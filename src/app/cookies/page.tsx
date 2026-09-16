@@ -22,7 +22,7 @@ export default function CookiesPolicy() {
         <section>
           <h2 className="font-serif text-xl text-ink">What this page covers</h2>
           <p className="mt-2">
-            A cookie is a small file a website can ask your browser to store. Here's exactly what
+            A cookie is a small file a website can ask your browser to store. Here&rsquo;s exactly what
             this site actually uses today — nothing more.
           </p>
         </section>
@@ -51,15 +51,16 @@ export default function CookiesPolicy() {
             </tbody>
           </table>
           <p className="mt-3">
-            Both are "strictly necessary" cookies — the site's admin login can't function without
-            them, and under most cookie laws (including Nigeria's NDPA and the EU/UK's
-            ePrivacy rules) they don't require visitor consent. If you're simply browsing the
-            shop, journal, or contact page, none of these cookies are ever set for you.
+            Both are &ldquo;strictly necessary&rdquo; cookies — the site&rsquo;s admin login
+            can&rsquo;t function without them, and under most cookie laws (including
+            Nigeria&rsquo;s NDPA and the EU/UK&rsquo;s ePrivacy rules) they don&rsquo;t require
+            visitor consent. If you&rsquo;re simply browsing the shop, journal, or contact page,
+            none of these cookies are ever set for you.
           </p>
         </section>
 
         <section>
-          <h2 className="font-serif text-xl text-ink">What we don't use — yet</h2>
+          <h2 className="font-serif text-xl text-ink">What we don&rsquo;t use — yet</h2>
           <p className="mt-2">
             No analytics (e.g. Google Analytics), no advertising or retargeting pixels, and no
             third-party tracking scripts run on this site at present. The small banner you may
@@ -67,7 +68,7 @@ export default function CookiesPolicy() {
           </p>
           <p className="mt-2">
             If that changes — for instance, if we add analytics to understand how the site is
-            used — we'll update this page first and ask for your consent through that same banner
+            used — we&rsquo;ll update this page first and ask for your consent through that same banner
             before anything non-essential loads.
           </p>
         </section>
@@ -76,7 +77,7 @@ export default function CookiesPolicy() {
           <h2 className="font-serif text-xl text-ink">Managing cookies</h2>
           <p className="mt-2">
             You can clear or block cookies at any time through your browser settings. Doing so
-            will simply sign out any admin session in progress — it won't affect your ability to
+            will simply sign out any admin session in progress — it won&rsquo;t affect your ability to
             browse the public site.
           </p>
         </section>

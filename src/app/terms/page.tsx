@@ -23,17 +23,17 @@ export default function Terms() {
           <h2 className="font-serif text-xl text-ink">1. Using this website</h2>
           <p className="mt-2">
             These terms cover your use of this website ({site.url}). By browsing it, submitting
-            the contact form, or enquiring about a product, you agree to them. They don't cover
-            the terms of an actual design project or product sale with {site.name} — those are
-            agreed separately, in writing, once we've spoken with you directly.
+            the contact form, or enquiring about a product, you agree to them. They don&rsquo;t
+            cover the terms of an actual design project or product sale with {site.name} — those
+            are agreed separately, in writing, once we&rsquo;ve spoken with you directly.
           </p>
         </section>
 
         <section>
           <h2 className="font-serif text-xl text-ink">2. No online checkout</h2>
           <p className="mt-2">
-            Everything in the Shop is enquiry-based. Clicking "Enquire to Purchase" or "Reserve a
-            Pre-Order" sends us a message — it does not create an order, take payment, or form a
+            Everything in the Shop is enquiry-based. Clicking &ldquo;Enquire to Purchase&rdquo; or
+            &ldquo;Reserve a Pre-Order&rdquo; sends us a message — it does not create an order, take payment, or form a
             contract of sale. Pricing shown is a guide and may change; product availability
             (in stock, pre-order, sold out) is set by us and can change without notice.
           </p>
@@ -43,9 +43,9 @@ export default function Terms() {
           <h2 className="font-serif text-xl text-ink">3. Content and intellectual property</h2>
           <p className="mt-2">
             The text, photography, and design of this site belong to {site.name} unless stated
-            otherwise, and are shown here to represent our work — please don't reproduce them
-            without asking us first. Journal posts reflect our own opinions and working methods;
-            they're not professional advice for your specific project or space.
+            otherwise, and are shown here to represent our work — please don&rsquo;t reproduce
+            them without asking us first. Journal posts reflect our own opinions and working
+            methods; they&rsquo;re not professional advice for your specific project or space.
           </p>
         </section>
 
@@ -53,7 +53,7 @@ export default function Terms() {
           <h2 className="font-serif text-xl text-ink">4. Accuracy</h2>
           <p className="mt-2">
             We try to keep pricing, availability, and project information accurate and current,
-            but we can't guarantee the site is always error-free or fully up to date. If
+            but we can&rsquo;t guarantee the site is always error-free or fully up to date. If
             something looks wrong, please tell us — {site.email}.
           </p>
         </section>
@@ -62,7 +62,7 @@ export default function Terms() {
           <h2 className="font-serif text-xl text-ink">5. Liability</h2>
           <p className="mt-2">
             This website and its content are provided as-is. To the extent permitted by law, we
-            aren't liable for losses arising from your use of the site itself (as distinct from
+            aren&rsquo;t liable for losses arising from your use of the site itself (as distinct from
             any separate written agreement for design or procurement services).
           </p>
         </section>

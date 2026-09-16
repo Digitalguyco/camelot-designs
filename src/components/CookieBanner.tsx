@@ -17,6 +17,10 @@ export default function CookieBanner() {
 
   useEffect(() => {
     try {
+      // localStorage doesn't exist during SSR, so this can't be read during
+      // render — an effect reading an external system on mount is the
+      // correct pattern here, not something to hoist out of one.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (!localStorage.getItem(STORAGE_KEY)) setVisible(true);
     } catch {
       // Storage unavailable (private browsing, etc.) — skip the banner

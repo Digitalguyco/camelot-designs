@@ -35,7 +35,7 @@ export default async function Shop() {
         </h1>
         <p className="mt-4 max-w-lg text-ink/65 leading-relaxed">
           Each item is sourced or built the same way we furnish a full project — in small
-          batches, from materials we'd use ourselves. {availability}
+          batches, from materials we&rsquo;d use ourselves. {availability}
         </p>
       </div>
 

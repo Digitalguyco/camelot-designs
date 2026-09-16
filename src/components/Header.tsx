@@ -9,11 +9,15 @@ import { nav, site } from "@/lib/content";
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
-  // Close the mobile menu whenever navigation happens.
-  useEffect(() => {
+  // Tracks the pathname the menu's open/closed state was last computed for,
+  // so we can reset `open` when navigation happens — done during render
+  // (React's documented pattern for "adjust state when a prop changes")
+  // rather than in an effect, which would cost an extra render pass.
+  const [openForPathname, setOpenForPathname] = useState(pathname);
+  if (pathname !== openForPathname) {
+    setOpenForPathname(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Lock page scroll and allow Escape to close while the menu is open.
   useEffect(() => {
