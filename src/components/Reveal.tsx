@@ -52,8 +52,11 @@ export default function Reveal({
   return (
     <Tag
       // Polymorphic tag + a single element ref type is a known TS friction
-      // point — the cast is safe since every branch is a plain DOM element.
-      ref={ref as unknown as React.Ref<HTMLDivElement>}
+      // point (the union tag's ref type becomes an intersection of every
+      // branch's ref signature) — `any` is the pragmatic escape hatch;
+      // it's safe since every branch is a plain DOM element.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ref={ref as any}
       className={`reveal transition-all duration-700 ease-out ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       } ${className}`}
