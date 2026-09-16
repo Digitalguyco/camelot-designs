@@ -1,39 +1,40 @@
 import Image from "next/image";
 import Link from "next/link";
-import { legalLinks, nav, site } from "@/lib/content";
+import { legalLinks, site } from "@/lib/content";
 import SocialLinks from "@/components/SocialLinks";
 
 export default function Footer() {
   return (
-    <footer className="border-t hairline bg-parchment">
+    <footer className="bg-card">
       <div className="mx-auto max-w-6xl px-6 py-16 grid gap-10 sm:grid-cols-4">
         <div className="sm:col-span-2">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/images/monogram-ink.png" alt="" width={28} height={29} className="invert" />
-            <span className="font-serif text-lg">{site.name}</span>
+          <Link href="/" className="flex items-center">
+            <Image src="/images/brand/logo-white.png" alt={site.name} width={180} height={68} />
           </Link>
-          <p className="mt-3 max-w-sm text-sm text-ink/70 leading-relaxed">{site.tagline}</p>
+          <p className="mt-4 max-w-sm text-sm text-ink/70 leading-relaxed">
+            We specialize in full-service interior and exterior design, procurement of custom
+            furniture, lighting and art procurement and installation.
+          </p>
         </div>
         <div className="text-sm">
-          <p className="eyebrow mb-3">Studio</p>
-          <ul className="space-y-2 text-ink/70">
-            {nav.slice(1).map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="hover:text-gold transition-colors">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <p className="eyebrow mb-3">Call</p>
+          <a href={`tel:${site.phone.replace(/[^+\d]/g, "")}`} className="text-ink/70 hover:text-gold transition-colors">
+            {site.phone}
+          </a>
         </div>
         <div className="text-sm">
-          <p className="eyebrow mb-3">Contact</p>
-          <ul className="space-y-2 text-ink/70">
-            <li>{site.phone}</li>
-            <li>{site.email}</li>
-            <li>{site.address}</li>
-          </ul>
-          <SocialLinks className="mt-4" />
+          <p className="eyebrow mb-3">Write</p>
+          <a href={`mailto:${site.email}`} className="text-ink/70 hover:text-gold transition-colors">
+            Send Us An Email
+          </a>
+        </div>
+        <div className="text-sm sm:col-start-3 sm:row-start-2">
+          <p className="eyebrow mb-3">Visit</p>
+          <p className="text-ink/70">{site.address}</p>
+        </div>
+        <div className="text-sm sm:col-start-4 sm:row-start-2">
+          <p className="eyebrow mb-3">Follow</p>
+          <SocialLinks />
         </div>
       </div>
       <div className="border-t hairline py-5">

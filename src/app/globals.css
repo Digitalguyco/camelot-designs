@@ -1,12 +1,15 @@
 @import "tailwindcss";
 
+/* Design tokens match the studio's original brand: near-black ground, white
+   text, a single gold accent — pulled from the real deployed values
+   (main-bg-color #1B1B1B, accent #b5933e) rather than a generic palette. */
 :root {
-  --parchment: #17150f;
-  --ink: #f1ede3;
-  --stone: #2a2620;
-  --gold: #c9a35a;
-  --card: #1f1c15;
-  --line: rgba(241, 237, 227, 0.14);
+  --parchment: #1b1b1b;
+  --ink: #ffffff;
+  --stone: #000000;
+  --gold: #b5933e;
+  --card: #000000;
+  --line: rgba(255, 255, 255, 0.14);
 }
 
 @theme inline {
@@ -16,9 +19,9 @@
   --color-gold: var(--gold);
   --color-card: var(--card);
   --color-line: var(--line);
-  --font-sans: var(--font-work-sans);
-  --font-serif: var(--font-fraunces);
-  --font-mono: var(--font-plex-mono);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+  --font-mono: var(--font-label);
 }
 
 body {
@@ -26,15 +29,20 @@ body {
   color: var(--ink);
 }
 
+/* Despite the name (kept to avoid touching every component), this is the
+   display/heading role — bold weight, uppercase, tight tracking, matching
+   the studio's original all-caps headline treatment. */
 .font-serif {
   font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
 .font-mono {
   font-family: var(--font-mono);
 }
 
-/* Atelier tag: small mono caption used as a recurring signature motif
+/* Atelier tag: small caption used as a recurring signature motif
    (fig. numbers, material notes, SKUs, read-time) — a nod to the
    spec labels used to annotate bespoke furnishings. */
 .tag {
@@ -51,18 +59,18 @@ body {
 /* Input surface: a real field, not a line on matching background */
 .field {
   background: var(--card);
-  border: 1px solid rgba(241, 237, 227, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: var(--ink);
 }
 
 .field:focus {
   outline: none;
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201, 163, 90, 0.2);
+  box-shadow: 0 0 0 3px rgba(181, 147, 62, 0.25);
 }
 
 .field::placeholder {
-  color: rgba(241, 237, 227, 0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 /* Primary action: solid fill so it visibly outranks secondary links */
@@ -70,11 +78,28 @@ body {
   background: var(--gold);
   color: var(--parchment);
   border: 1px solid var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .btn-primary:hover {
-  background: #ddb975;
-  border-color: #ddb975;
+  background: #cba54e;
+  border-color: #cba54e;
+}
+
+/* Secondary action: the studio's original button — gold outline, white
+   text, transparent ground, filling gold on hover. */
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.btn-outline:hover {
+  background: var(--gold);
+  color: var(--parchment);
 }
 
 /* Hints that the mobile nav scrolls horizontally, without JS */
@@ -94,6 +119,8 @@ body {
 /* Rich-text editor (admin) and rendered blog body share this look. */
 .prose-editor :where(h2, h3) {
   font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
   margin-top: 1.25em;
   margin-bottom: 0.4em;
 }

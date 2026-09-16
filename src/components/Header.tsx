@@ -32,33 +32,26 @@ export default function Header() {
 
   return (
     <>
-      <header className="border-b hairline bg-parchment/95 backdrop-blur sticky top-0 z-50">
+      {/* Transparent, floating over the page rather than a solid bar — the
+          studio's original header had no fill and no border, just the logo
+          and nav sitting on the dark ground. */}
+      <header className="sticky top-0 z-50 bg-transparent">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
           <Link href="/" className="flex shrink-0 items-center gap-3">
-            <Image
-              src="/images/monogram-ink.png"
-              alt=""
-              width={34}
-              height={35}
-              priority
-              className="invert"
-            />
-            <span className="font-serif text-lg tracking-wide">{site.name}</span>
+            <Image src="/images/brand/monogram.png" alt="" width={40} height={31} priority />
+            <span className="font-serif text-base tracking-wide">{site.name}</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-7 text-sm tracking-wide text-ink/70">
+          <nav className="hidden md:flex items-center gap-7 tag text-ink/80">
             {nav.map((item) => (
-              <Link key={item.href} href={item.href} className="hover:text-ink transition-colors">
+              <Link key={item.href} href={item.href} className="hover:text-gold transition-colors">
                 {item.label}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/contact"
-              className="hidden md:inline-block shrink-0 eyebrow border border-ink/50 px-4 py-2 hover:border-gold hover:bg-gold hover:text-card transition-colors"
-            >
+            <Link href="/contact" className="hidden md:inline-block shrink-0 btn-outline px-4 py-2 text-xs">
               Enquire
             </Link>
 
@@ -83,7 +76,7 @@ export default function Header() {
 
       {/* Mobile menu — a sibling of <header>, not a descendant, so its `fixed`
           positioning resolves against the viewport rather than getting scoped
-          to header's box by header's backdrop-blur (a containing-block trigger). */}
+          to header's box. */}
       <div
         id="mobile-menu"
         className={`md:hidden fixed left-0 right-0 bottom-0 top-[68px] z-40 bg-parchment transition-opacity duration-200 ${
@@ -95,14 +88,14 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="font-serif text-3xl py-4 border-b hairline hover:text-gold transition-colors"
+              className="font-serif text-2xl py-4 border-b hairline hover:text-gold transition-colors"
             >
               {item.label}
             </Link>
           ))}
 
           <div className="mt-auto pb-10 pt-8">
-            <Link href="/contact" className="btn-primary block text-center px-6 py-3 text-sm tracking-wide">
+            <Link href="/contact" className="btn-primary block text-center px-6 py-3 text-sm">
               Enquire
             </Link>
             <p className="tag text-ink/60 mt-6">{site.phone}</p>

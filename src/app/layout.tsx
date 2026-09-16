@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Work_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Jost } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
@@ -7,22 +7,27 @@ import CookieBanner from "@/components/CookieBanner";
 import { site } from "@/lib/content";
 import "./globals.css";
 
-const workSans = Work_Sans({
-  variable: "--font-work-sans",
+// One typeface, three weights — mirrors the studio's original site, which
+// used a single family (FuturaLT) cut into Book/Light/Heavy/Bold statics for
+// body, links, and headings respectively. Jost is a free geometric sans in
+// the same spirit (it's explicitly modeled on Futura's proportions).
+const jostBody = Jost({
+  variable: "--font-body",
   subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
+  weight: ["300", "400"],
   style: ["normal", "italic"],
-  axes: ["opsz", "SOFT"],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
+const jostHeading = Jost({
+  variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["600", "700"],
+});
+
+const jostLabel = Jost({
+  variable: "--font-label",
+  subsets: ["latin"],
+  weight: ["500"],
 });
 
 export const metadata: Metadata = {
@@ -36,13 +41,13 @@ export const metadata: Metadata = {
     title: site.name,
     description: site.tagline,
     url: "/",
-    images: ["/images/living-room-1.jpg"],
+    images: ["/images/brand/hero-banner.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title: site.name,
     description: site.tagline,
-    images: ["/images/living-room-1.jpg"],
+    images: ["/images/brand/hero-banner.jpg"],
   },
 };
 
@@ -71,7 +76,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${workSans.variable} ${fraunces.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${jostBody.variable} ${jostHeading.variable} ${jostLabel.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col overflow-x-hidden font-sans bg-parchment text-ink">
         <JsonLd data={organizationJsonLd} />

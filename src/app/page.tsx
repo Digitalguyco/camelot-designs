@@ -16,49 +16,50 @@ export default async function Home() {
 
   return (
     <div>
-      {/* Hero — asymmetric, text against a single deliberate image */}
-      <section className="mx-auto max-w-6xl px-6 pt-14 sm:pt-20">
-        <div className="grid gap-10 md:grid-cols-12 md:items-end">
-          <div className="md:col-span-5">
-            <p className="eyebrow">Interior Design Studio — Lagos</p>
-            <h1 className="font-serif text-5xl sm:text-6xl leading-[1.05] mt-4">
-              Sophisticated interiors, <span className="italic">considered slowly.</span>
-            </h1>
-            <p className="mt-6 text-ink/65 leading-relaxed max-w-sm">{site.tagline}</p>
-            <Link
-              href="/contact"
-              className="btn-primary mt-8 inline-block px-7 py-3 text-sm tracking-wide"
-            >
-              Book a Consultation
-            </Link>
-          </div>
-          <div className="md:col-span-7">
-            <div className="relative aspect-[4/3]">
-              <Image
-                src="/images/living-room-1.jpg"
-                alt="Living room designed by Camelot Designs, layered textiles and warm neutrals"
-                fill
-                priority
-                className="object-cover"
-              />
-            </div>
-            <p className="tag text-ink/60 mt-3">Fig. 01 — Featured Project, Living Room</p>
-          </div>
-        </div>
+      {/* Hero — the studio's headline, typographic, against the dark ground */}
+      <section className="mx-auto max-w-4xl px-6 pt-24 sm:pt-32 pb-16 text-center">
+        <p className="eyebrow">Interior Design Studio — Lagos</p>
+        <h1 className="font-serif text-5xl sm:text-6xl leading-[1.05] mt-4">
+          Sophisticated interiors, <span className="italic">considered slowly.</span>
+        </h1>
+        <p className="mt-6 text-ink/65 leading-relaxed max-w-xl mx-auto">{site.tagline}</p>
+        <Link href="/contact" className="btn-primary mt-8 inline-block px-7 py-3 text-sm">
+          Book a Consultation
+        </Link>
+      </section>
+
+      {/* Brand banner — the studio's own signature visual */}
+      <section className="relative aspect-[16/9] sm:aspect-[21/9]">
+        <Image
+          src="/images/brand/hero-banner.jpg"
+          alt="Camelot Designs — interior design studio"
+          fill
+          priority
+          className="object-cover"
+        />
       </section>
 
       {/* Stats strip */}
-      <section className="mx-auto max-w-6xl px-6 mt-20 sm:mt-28">
-        <div className="grid grid-cols-3 border-y hairline">
-          {stats.map((stat, i) => (
-            <div
-              key={stat.label}
-              className={`py-8 text-center ${i > 0 ? "border-l hairline" : ""}`}
-            >
-              <p className="font-serif text-4xl sm:text-5xl">{stat.value}</p>
-              <p className="tag text-ink/60 mt-2">{stat.label}</p>
-            </div>
-          ))}
+      <section className="bg-card py-20 sm:py-28">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <h2 className="font-serif text-3xl sm:text-4xl text-gold">Some Interesting Facts</h2>
+          <p className="mt-4 text-ink/65 leading-relaxed max-w-xl mx-auto">
+            We work with homeowners, or partner with architects, custom home builders, and
+            artisans, to explore and discover meaningful solutions for every space we touch.
+          </p>
+        </div>
+        <div className="mx-auto max-w-6xl px-6 mt-14">
+          <div className="grid grid-cols-3 border-y hairline">
+            {stats.map((stat, i) => (
+              <div
+                key={stat.label}
+                className={`py-8 text-center ${i > 0 ? "border-l hairline" : ""}`}
+              >
+                <p className="font-serif text-4xl sm:text-5xl">{stat.value}</p>
+                <p className="tag text-ink/60 mt-2">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -168,10 +169,7 @@ export default async function Home() {
         <h2 className="font-serif text-3xl sm:text-4xl max-w-lg mx-auto">
           Ready to start your room?
         </h2>
-        <Link
-          href="/contact"
-          className="mt-8 inline-block border border-gold text-gold px-8 py-3 text-sm tracking-wide hover:bg-gold hover:text-card transition-colors"
-        >
+        <Link href="/contact" className="btn-outline mt-8 inline-block px-8 py-3 text-sm transition-colors">
           Book a Consultation
         </Link>
       </section>
