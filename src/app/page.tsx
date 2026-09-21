@@ -50,16 +50,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Brand banner — the studio's own signature visual */}
-      <section className="relative aspect-[16/9] sm:aspect-[21/9]">
-        <Image
-          src="/images/brand/hero-banner.jpg"
-          alt="Camelot Designs — interior design studio"
-          fill
-          className="object-cover"
-        />
-      </section>
-
       {/* Stats strip */}
       <section className="relative overflow-hidden bg-card py-20 sm:py-28">
         <Constellation />
