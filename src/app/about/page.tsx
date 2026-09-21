@@ -33,13 +33,13 @@ export default function About() {
           <div>
             <div className="relative aspect-[4/5] overflow-hidden bg-card">
               <Image
-                src="/images/hero.png"
-                alt="Founder of Camelot Designs"
+                src="/images/team/founder-about.jpg"
+                alt="Imuetinyan Daniel, Founder and Creative Director of Camelot Designs"
                 fill
                 className="object-cover"
               />
             </div>
-            <p className="tag text-ink/60 mt-3">Fig. 02 — Principal Designer</p>
+            <p className="tag text-ink/60 mt-3">Imuetinyan Daniel — Founder &amp; Creative Director</p>
           </div>
         </div>
       </div>

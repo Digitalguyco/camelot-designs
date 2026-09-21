@@ -3,6 +3,7 @@ import { auth, signOut } from "@/lib/auth";
 
 const links = [
   { href: "/admin/products", label: "Products" },
+  { href: "/admin/projects", label: "Projects" },
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/messages", label: "Messages" },
 ];

@@ -8,6 +8,13 @@
       "when": 1789391581857,
       "tag": "0000_medical_mad_thinker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1790019000415,
+      "tag": "0001_loving_sinister_six",
+      "breakpoints": true
     }
   ]
 }

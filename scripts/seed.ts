@@ -10,9 +10,9 @@ import "./load-env";
 import { hash } from "bcryptjs";
 import { count } from "drizzle-orm";
 import { db } from "../src/lib/db";
-import { adminUsers, posts, products } from "../src/lib/db/schema";
+import { adminUsers, posts, products, projects } from "../src/lib/db/schema";
 
-async function tableCount(table: typeof products | typeof posts) {
+async function tableCount(table: typeof products | typeof posts | typeof projects) {
   const [row] = await db.select({ n: count() }).from(table);
   return row?.n ?? 0;
 }
@@ -261,10 +261,77 @@ async function seedPosts() {
   console.log(`Seeded ${demoPosts.length} posts.`);
 }
 
+async function seedProjects() {
+  const existing = await tableCount(projects);
+  if (existing > 0) {
+    console.log(`${existing} project(s) already exist — skipping project seed.`);
+    return;
+  }
+
+  const demoProjects = [
+    {
+      slug: "ikoyi-family-residence",
+      name: "Ikoyi Family Residence",
+      location: "Ikoyi, Lagos",
+      projectType: "Residential",
+      scope: "Full interior design and procurement across a four-bedroom family home.",
+      concept:
+        "A warm, layered palette built around the family's existing art collection — textured neutrals, brass detailing, and considered lighting that reads as calm during the day and intimate in the evening.",
+      materials: "Boucle and linen upholstery, brass hardware, hand-knotted wool rugs, oak millwork.",
+      role: "Interior design, space planning, furniture procurement and installation.",
+      featured: true,
+      images: ["/images/living-room-1.jpg", "/images/living-room-2.jpg"],
+    },
+    {
+      slug: "victoria-island-penthouse",
+      name: "Victoria Island Penthouse",
+      location: "Victoria Island, Lagos",
+      projectType: "Residential",
+      scope: "Full interior fit-out for a two-floor penthouse, from concept through styling.",
+      concept:
+        "A deep navy and ink palette against floor-to-ceiling glass, chosen to hold its own against the skyline view rather than compete with it.",
+      materials: "Velvet and bouclé seating, walnut joinery, brushed brass fixtures.",
+      role: "Concept development, 3D visualization, procurement and installation.",
+      featured: true,
+      images: ["/images/navy-living-room.jpg"],
+    },
+    {
+      slug: "lekki-showroom-fit-out",
+      name: "Lekki Showroom Fit-Out",
+      location: "Lekki, Lagos",
+      projectType: "Commercial",
+      scope: "Bespoke furniture design and fabrication for a retail showroom floor.",
+      concept:
+        "Custom pieces designed to be handled and sat in by shoppers — durable joinery and finishes dressed up with the same detailing as our residential work.",
+      materials: "Solid oak frames, brass inlay, performance-grade upholstery fabric.",
+      role: "Bespoke furniture design, fabrication oversight, and delivery.",
+      featured: false,
+      images: ["/images/bespoke-furniture.jpg"],
+    },
+    {
+      slug: "banana-island-villa",
+      name: "Banana Island Villa",
+      location: "Banana Island, Lagos",
+      projectType: "Residential",
+      scope: "Ground-up interior design for a new-build villa, all common and private areas.",
+      concept:
+        "A considered sequence of spaces — formal rooms that feel composed, private rooms that feel unguarded — held together by one consistent material and color language throughout.",
+      materials: "Limestone flooring, plaster walls, custom joinery, mixed-metal lighting.",
+      role: "Full interior design, procurement, and project coordination.",
+      featured: true,
+      images: ["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-3.jpg"],
+    },
+  ];
+
+  await db.insert(projects).values(demoProjects);
+  console.log(`Seeded ${demoProjects.length} projects.`);
+}
+
 async function main() {
   await seedAdmin();
   await seedProducts();
   await seedPosts();
+  await seedProjects();
   process.exit(0);
 }
 

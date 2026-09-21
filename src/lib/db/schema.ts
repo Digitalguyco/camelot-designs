@@ -58,6 +58,27 @@ export const posts = sqliteTable("posts", {
     .$defaultFn(() => new Date()),
 });
 
+export const projects = sqliteTable("projects", {
+  id: id(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  location: text("location").notNull(),
+  projectType: text("project_type").notNull(),
+  scope: text("scope").notNull(),
+  concept: text("concept").notNull(),
+  materials: text("materials").notNull(),
+  role: text("role").notNull(),
+  // Ordered array of /uploads/... paths. First entry is the cover image.
+  images: text("images", { mode: "json" }).$type<string[]>().notNull().default([]),
+  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 export const contactMessages = sqliteTable("contact_messages", {
   id: id(),
   name: text("name").notNull(),
@@ -74,4 +95,6 @@ export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
+export type Project = typeof projects.$inferSelect;
+export type NewProject = typeof projects.$inferInsert;
 export type ContactMessage = typeof contactMessages.$inferSelect;

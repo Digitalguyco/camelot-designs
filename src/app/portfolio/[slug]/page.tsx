@@ -1,0 +1,147 @@
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { site } from "@/lib/content";
+import { getAllProjects, getProjectBySlug } from "@/lib/data/projects";
+import JsonLd from "@/components/JsonLd";
+
+// Project data lives in the database and changes from /admin — always render fresh.
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+  if (!project) return { title: "Portfolio" };
+
+  const description = `${project.projectType} project in ${project.location} — ${project.scope}`.slice(
+    0,
+    155,
+  );
+  return {
+    title: project.name,
+    description,
+    alternates: { canonical: `/portfolio/${project.slug}` },
+    openGraph: {
+      title: `${project.name} — ${site.name}`,
+      description,
+      url: `/portfolio/${project.slug}`,
+      images: project.images,
+    },
+  };
+}
+
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+  if (!project) notFound();
+
+  const allProjects = await getAllProjects();
+  const more = allProjects.filter((p) => p.slug !== project.slug).slice(0, 2);
+
+  const details = [
+    ["Location", project.location],
+    ["Project Type", project.projectType],
+    ["Our Role", project.role],
+  ] as const;
+
+  const projectJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.name,
+    description: project.concept,
+    image: project.images,
+    locationCreated: { "@type": "Place", name: project.location },
+    creator: { "@type": "Organization", name: site.name },
+  };
+
+  return (
+    <article>
+      <JsonLd data={projectJsonLd} />
+      <div className="mx-auto max-w-6xl px-6 pt-16">
+        <Link href="/portfolio" className="tag text-ink/60 hover:text-gold transition-colors">
+          ← Portfolio
+        </Link>
+      </div>
+
+      <div className="mx-auto max-w-6xl px-6 mt-8 grid gap-12 md:grid-cols-2">
+        <div className="relative aspect-[4/5] overflow-hidden bg-stone">
+          {/* Admin-uploaded content — plain <img>, see ProductCard. */}
+          <img src={project.images[0]} alt={project.name} className="w-full h-full object-cover" />
+        </div>
+
+        <div>
+          <p className="eyebrow">{project.projectType}</p>
+          <h1 className="font-serif text-3xl sm:text-4xl mt-2">{project.name}</h1>
+          <p className="mt-3 text-ink/65">{project.location}</p>
+
+          <p className="mt-6 text-ink/70 leading-relaxed max-w-md">{project.scope}</p>
+
+          <dl className="mt-8 space-y-2 border-t hairline pt-6">
+            {details.map(([label, value]) => (
+              <div key={label} className="flex justify-between gap-4 text-sm">
+                <dt className="tag text-ink/60">{label}</dt>
+                <dd className="text-ink/80 text-right">{value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className="mt-8">
+            <Link href="/contact" className="btn-primary inline-block px-6 py-3 text-sm">
+              Start a Project Like This
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-3xl px-6 py-16 space-y-10">
+        <section>
+          <p className="eyebrow">Design Concept</p>
+          <p className="mt-3 text-ink/75 leading-relaxed text-lg">{project.concept}</p>
+        </section>
+        <section>
+          <p className="eyebrow">Materials &amp; Furniture</p>
+          <p className="mt-3 text-ink/75 leading-relaxed">{project.materials}</p>
+        </section>
+      </div>
+
+      {project.images.length > 1 && (
+        <div className="mx-auto max-w-6xl px-6 pb-16">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {project.images.slice(1).map((src) => (
+              <div key={src} className="relative aspect-[4/3] overflow-hidden bg-stone">
+                <img src={src} alt={project.name} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {more.length > 0 && (
+        <div className="border-t hairline">
+          <div className="mx-auto max-w-5xl px-6 py-16">
+            <p className="eyebrow mb-8">More Projects</p>
+            <div className="grid gap-10 sm:grid-cols-2">
+              {more.map((p) => (
+                <Link key={p.slug} href={`/portfolio/${p.slug}`} className="group block">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-stone">
+                    <img
+                      src={p.images[0]}
+                      alt={p.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <p className="tag text-ink/60 mt-4">{p.location}</p>
+                  <h3 className="font-serif text-xl mt-1">{p.name}</h3>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </article>
+  );
+}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { site } from "@/lib/content";
 import { getAllProducts } from "@/lib/data/products";
-import ProductCard from "@/components/ProductCard";
+import ShopBrowser from "./ShopBrowser";
 
 // Product data lives in Postgres and changes from /admin — always render fresh.
 export const dynamic = "force-dynamic";
@@ -40,11 +40,7 @@ export default async function Shop() {
       </div>
 
       <div className="mx-auto max-w-6xl px-6 pb-24">
-        <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
-        </div>
+        <ShopBrowser products={items} />
       </div>
     </div>
   );

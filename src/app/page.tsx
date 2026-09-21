@@ -1,36 +1,53 @@
 import Image from "next/image";
 import Link from "next/link";
-import { processSteps, services, site, portfolio, stats } from "@/lib/content";
+import { services, site, stats } from "@/lib/content";
 import { getAllProducts } from "@/lib/data/products";
-import { getPublishedPosts } from "@/lib/data/posts";
+import { getFeaturedProjects } from "@/lib/data/projects";
 import ProductCard from "@/components/ProductCard";
-import ArticleCard from "@/components/ArticleCard";
 import Constellation from "@/components/Constellation";
 import CountUp from "@/components/CountUp";
 import Reveal from "@/components/Reveal";
 
-// Shop picks and the journal teaser come from Postgres — always render fresh.
+// Shop picks and featured projects come from the database — always render fresh.
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [allProducts, allPosts] = await Promise.all([getAllProducts(), getPublishedPosts()]);
+  const [allProducts, featuredProjects] = await Promise.all([
+    getAllProducts(),
+    getFeaturedProjects(3),
+  ]);
   const shopPicks = allProducts.filter((p) => p.status !== "sold-out").slice(0, 3);
-  const [latestPost] = allPosts;
 
   return (
     <div>
-      {/* Hero — the studio's headline, typographic, against the dark ground */}
-      <section className="mx-auto max-w-4xl px-6 pt-24 sm:pt-32 pb-16 text-center">
-        <Reveal>
-          <p className="eyebrow">Interior Design Studio — Lagos</p>
-          <h1 className="font-serif text-5xl sm:text-6xl leading-[1.05] mt-4">
-            Sophisticated interiors, <span className="italic">considered slowly.</span>
-          </h1>
-          <p className="mt-6 text-ink/65 leading-relaxed max-w-xl mx-auto">{site.tagline}</p>
-          <Link href="/contact" className="btn-primary mt-8 inline-block px-7 py-3 text-sm">
-            Book a Consultation
-          </Link>
-        </Reveal>
+      {/* Hero — the studio's headline, side by side with the founder's own presence */}
+      <section className="mx-auto max-w-6xl px-6 pt-20 sm:pt-28 pb-20">
+        <div className="grid gap-12 md:grid-cols-12 md:items-center">
+          <Reveal className="md:col-span-7">
+            <p className="eyebrow">Interior Design Studio — Lagos</p>
+            <h1 className="font-serif text-4xl sm:text-5xl leading-[1.1] mt-4">
+              Sophisticated interiors, <span className="italic">considered slowly.</span>
+            </h1>
+            <p className="mt-6 text-ink/65 leading-relaxed max-w-lg">{site.tagline}</p>
+            <Link href="/contact" className="btn-primary mt-8 inline-block px-7 py-3 text-sm">
+              Book a Consultation
+            </Link>
+          </Reveal>
+          <Reveal delay={150} className="md:col-span-5">
+            <div className="border border-gold/40 p-3">
+              <div className="relative aspect-[3/4] overflow-hidden bg-stone">
+                <Image
+                  src="/images/team/founder-hero.jpg"
+                  alt="Imuetinyan Daniel, Founder and Creative Director of Camelot Designs"
+                  fill
+                  priority
+                  className="object-cover"
+                />
+              </div>
+            </div>
+            <p className="tag text-ink/60 mt-3">Imuetinyan Daniel — Founder &amp; Creative Director</p>
+          </Reveal>
+        </div>
       </section>
 
       {/* Brand banner — the studio's own signature visual */}
@@ -39,7 +56,6 @@ export default async function Home() {
           src="/images/brand/hero-banner.jpg"
           alt="Camelot Designs — interior design studio"
           fill
-          priority
           className="object-cover"
         />
       </section>
@@ -72,31 +88,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Process — a real, ordered sequence, so numbering earns its place */}
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
-        <div className="grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
-            <p className="eyebrow">How We Work</p>
-            <h2 className="font-serif text-3xl mt-2">Our Process</h2>
-          </Reveal>
-          <ol className="md:col-span-8 divide-y hairline border-y hairline">
-            {processSteps.map((step, i) => (
-              <Reveal
-                key={step}
-                as="li"
-                delay={i * 100}
-                className="flex items-baseline gap-6 py-6"
-              >
-                <span className="tag text-gold">{String(i + 1).padStart(2, "0")}</span>
-                <span className="font-serif text-2xl">{step}</span>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
-      </section>
-
       {/* Services — editorial list, not a card grid */}
-      <section className="mx-auto max-w-6xl px-6 pb-20 sm:pb-28">
+      <section className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
         <div className="grid gap-10 md:grid-cols-12">
           <Reveal className="md:col-span-4">
             <p className="eyebrow">What We Offer</p>
@@ -117,37 +110,43 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Latest work */}
-      <section className="relative overflow-hidden bg-card border-y hairline py-20 sm:py-28">
-        <Constellation />
-        <div className="relative mx-auto max-w-6xl px-6">
-          <Reveal>
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <p className="eyebrow">Portfolio</p>
-                <h2 className="font-serif text-3xl mt-2">Recent Work</h2>
-              </div>
-              <Link href="/portfolio" className="eyebrow hover:text-ink transition-colors">
-                View All →
-              </Link>
-            </div>
-          </Reveal>
-          <div className="grid gap-6 sm:grid-cols-3">
-            {portfolio.slice(0, 3).map((item, i) => (
-              <Reveal key={item.src} delay={i * 100}>
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-500"
-                  />
+      {/* Recent work — the studio's own projects, shown alongside the shop */}
+      {featuredProjects.length > 0 && (
+        <section className="relative overflow-hidden bg-card border-y hairline py-20 sm:py-28">
+          <Constellation />
+          <div className="relative mx-auto max-w-6xl px-6">
+            <Reveal>
+              <div className="flex items-end justify-between mb-10">
+                <div>
+                  <p className="eyebrow">Portfolio</p>
+                  <h2 className="font-serif text-3xl mt-2">Recent Work</h2>
                 </div>
-              </Reveal>
-            ))}
+                <Link href="/portfolio" className="eyebrow hover:text-ink transition-colors">
+                  View All →
+                </Link>
+              </div>
+            </Reveal>
+            <div className="grid gap-8 sm:grid-cols-3">
+              {featuredProjects.map((project, i) => (
+                <Reveal key={project.slug} delay={i * 100}>
+                  <Link href={`/portfolio/${project.slug}`} className="group block">
+                    <div className="relative aspect-[4/5] overflow-hidden">
+                      {/* Admin-uploaded content — plain <img>, see ProductCard. */}
+                      <img
+                        src={project.images[0]}
+                        alt={project.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <p className="tag text-ink/60 mt-3">{project.location}</p>
+                    <h3 className="font-serif text-lg mt-1">{project.name}</h3>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Shop teaser */}
       {shopPicks.length > 0 && (
@@ -169,27 +168,6 @@ export default async function Home() {
                 <ProductCard product={product} />
               </Reveal>
             ))}
-          </div>
-        </section>
-      )}
-
-      {/* Journal teaser */}
-      {latestPost && (
-        <section className="relative overflow-hidden bg-card border-t hairline py-20 sm:py-28">
-          <Constellation />
-          <div className="relative mx-auto max-w-6xl px-6">
-            <Reveal>
-              <div className="flex items-end justify-between mb-10">
-                <div>
-                  <p className="eyebrow">Journal</p>
-                  <h2 className="font-serif text-3xl mt-2">From the Studio Floor</h2>
-                </div>
-                <Link href="/blog" className="eyebrow hover:text-ink transition-colors">
-                  Read More →
-                </Link>
-              </div>
-              <ArticleCard post={latestPost} featured />
-            </Reveal>
           </div>
         </section>
       )}
