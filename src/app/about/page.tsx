@@ -1,8 +1,9 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { processSteps, site } from "@/lib/content";
+import Accordion from "@/components/Accordion";
 
-const description = `Learn about ${site.name}, a Lagos-based interior design and procurement studio established in 2015.`;
+const description = `Learn about ${site.name}, a Nigeria-based interior design and procurement studio established in 2015.`;
 
 export const metadata: Metadata = {
   title: "About",
@@ -51,14 +52,9 @@ export default function About() {
               <p className="eyebrow">How We Work</p>
               <h2 className="font-serif text-3xl mt-2">Our Process</h2>
             </div>
-            <ol className="md:col-span-8 divide-y hairline border-y hairline">
-              {processSteps.map((step, i) => (
-                <li key={step} className="flex items-baseline gap-6 py-6">
-                  <span className="tag text-gold">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="font-serif text-2xl">{step}</span>
-                </li>
-              ))}
-            </ol>
+            <div className="md:col-span-8">
+              <Accordion items={processSteps} />
+            </div>
           </div>
         </div>
       </div>

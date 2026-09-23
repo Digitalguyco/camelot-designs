@@ -47,7 +47,7 @@ async function seedProducts() {
     {
       slug: "tufted-accent-chair",
       name: "The Tufted Accent Chair",
-      category: "Seating",
+      category: "Furniture",
       priceCents: 124000,
       material: "Boucle, turned beechwood",
       dimensions: "26\"W x 28\"D x 33\"H",
@@ -60,7 +60,7 @@ async function seedProducts() {
     {
       slug: "nordic-shell-chair",
       name: "The Nordic Shell Chair",
-      category: "Seating",
+      category: "Furniture",
       priceCents: 68000,
       material: "Molded shell, ash legs",
       dimensions: "20\"W x 22\"D x 31\"H",
@@ -73,7 +73,7 @@ async function seedProducts() {
     {
       slug: "larkspur-velvet-sofa",
       name: "The Larkspur Velvet Sofa",
-      category: "Seating",
+      category: "Furniture",
       priceCents: 345000,
       material: "Emerald velvet, brass feet",
       dimensions: "82\"W x 34\"D x 31\"H",
@@ -86,7 +86,7 @@ async function seedProducts() {
     {
       slug: "ellery-loveseat",
       name: "The Ellery Loveseat",
-      category: "Seating",
+      category: "Furniture",
       priceCents: 218000,
       material: "Burnt-sienna linen, walnut legs",
       dimensions: "62\"W x 33\"D x 30\"H",
@@ -99,7 +99,7 @@ async function seedProducts() {
     {
       slug: "reverie-chaise",
       name: "The Reverie Chaise",
-      category: "Seating",
+      category: "Furniture",
       priceCents: 289000,
       material: "Camel suede, oak frame",
       dimensions: "64\"W x 30\"D x 29\"H",
@@ -112,7 +112,7 @@ async function seedProducts() {
     {
       slug: "bedside-table",
       name: "The Bedside Table",
-      category: "Tables",
+      category: "Furniture",
       priceCents: 42000,
       material: "White lacquer, dipped oak legs",
       dimensions: "16\"W x 16\"D x 22\"H",
@@ -125,7 +125,7 @@ async function seedProducts() {
     {
       slug: "studio-task-lamp",
       name: "The Studio Task Lamp",
-      category: "Lighting",
+      category: "Lightings",
       priceCents: 34000,
       material: "Matte steel",
       dimensions: "7\"W x 20\"H, adjustable",
@@ -138,7 +138,7 @@ async function seedProducts() {
     {
       slug: "heirloom-rug",
       name: "The Heirloom Rug",
-      category: "Textiles",
+      category: "Rugs",
       priceCents: 186000,
       material: "Hand-knotted wool",
       dimensions: "8' x 10'",
@@ -151,7 +151,7 @@ async function seedProducts() {
     {
       slug: "aloe-planter",
       name: "The Aloe Planter",
-      category: "Decor",
+      category: "Decor Accessories",
       priceCents: 6400,
       material: "Glazed ceramic",
       dimensions: "6\"W x 6\"H",

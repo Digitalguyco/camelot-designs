@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { site } from "@/lib/content";
 import { getAllProjects, getProjectBySlug } from "@/lib/data/projects";
 import JsonLd from "@/components/JsonLd";
+import ProjectGallery from "@/components/ProjectGallery";
 
 // Project data lives in the database and changes from /admin — always render fresh.
 export const dynamic = "force-dynamic";
@@ -42,12 +43,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const allProjects = await getAllProjects();
   const more = allProjects.filter((p) => p.slug !== project.slug).slice(0, 2);
 
-  const details = [
-    ["Location", project.location],
-    ["Project Type", project.projectType],
-    ["Our Role", project.role],
-  ] as const;
-
   const projectJsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
@@ -67,35 +62,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </Link>
       </div>
 
-      <div className="mx-auto max-w-6xl px-6 mt-8 grid gap-12 md:grid-cols-2">
-        <div className="relative aspect-[4/5] overflow-hidden bg-stone">
-          {/* Admin-uploaded content — plain <img>, see ProductCard. */}
-          <img src={project.images[0]} alt={project.name} className="w-full h-full object-cover" />
-        </div>
-
-        <div>
-          <p className="eyebrow">{project.projectType}</p>
-          <h1 className="font-serif text-3xl sm:text-4xl mt-2">{project.name}</h1>
-          <p className="mt-3 text-ink/65">{project.location}</p>
-
-          <p className="mt-6 text-ink/70 leading-relaxed max-w-md">{project.scope}</p>
-
-          <dl className="mt-8 space-y-2 border-t hairline pt-6">
-            {details.map(([label, value]) => (
-              <div key={label} className="flex justify-between gap-4 text-sm">
-                <dt className="tag text-ink/60">{label}</dt>
-                <dd className="text-ink/80 text-right">{value}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <div className="mt-8">
-            <Link href="/contact" className="btn-primary inline-block px-6 py-3 text-sm">
-              Start a Project Like This
-            </Link>
-          </div>
-        </div>
-      </div>
+      <ProjectGallery project={project} />
 
       <div className="mx-auto max-w-3xl px-6 py-16 space-y-10">
         <section>
@@ -107,18 +74,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           <p className="mt-3 text-ink/75 leading-relaxed">{project.materials}</p>
         </section>
       </div>
-
-      {project.images.length > 1 && (
-        <div className="mx-auto max-w-6xl px-6 pb-16">
-          <div className="grid gap-4 sm:grid-cols-2">
-            {project.images.slice(1).map((src) => (
-              <div key={src} className="relative aspect-[4/3] overflow-hidden bg-stone">
-                <img src={src} alt={project.name} className="w-full h-full object-cover" />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {more.length > 0 && (
         <div className="border-t hairline">

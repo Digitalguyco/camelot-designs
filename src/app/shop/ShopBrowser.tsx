@@ -2,16 +2,17 @@
 
 import { useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
+import { productCategories } from "@/lib/content";
 import type { Product } from "@/lib/data/products";
+
+// Fixed taxonomy, not derived from whatever's currently in stock — the
+// admin's category picker uses the same list (see ProductForm), so filters
+// stay meaningful even as inventory in a given category comes and goes.
+const categories = ["All", ...productCategories];
 
 export default function ShopBrowser({ products }: { products: Product[] }) {
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
-
-  const categories = useMemo(() => {
-    const unique = Array.from(new Set(products.map((p) => p.category))).sort();
-    return ["All", ...unique];
-  }, [products]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

@@ -26,25 +26,30 @@ export default function Contact() {
             consultation.
           </p>
 
-          <dl className="mt-8 space-y-2 border-t hairline pt-6 text-sm max-w-xs">
-            <div className="flex justify-between">
-              <dt className="tag text-ink/65">Phone</dt>
-              <dd>{site.phone}</dd>
+          <dl className="mt-8 space-y-4 border-t hairline pt-6 text-sm max-w-xs">
+            <div className="flex justify-between gap-4">
+              <dt className="tag text-ink/65 shrink-0">Phone</dt>
+              <dd className="text-right">{site.phone}</dd>
             </div>
-            <div className="flex justify-between">
-              <dt className="tag text-ink/65">Email</dt>
-              <dd>{site.email}</dd>
+            <div className="flex justify-between gap-4">
+              <dt className="tag text-ink/65 shrink-0">Email</dt>
+              <dd className="text-right break-all">{site.email}</dd>
             </div>
-            <div className="flex justify-between">
+            <div>
               <dt className="tag text-ink/65">Studio</dt>
-              <dd>{site.address}</dd>
+              <dd className="mt-1 text-ink/80">{site.address}</dd>
             </div>
           </dl>
 
           <SocialLinks className="mt-6" />
 
           <div className="relative mt-8 aspect-[4/3] overflow-hidden hidden md:block">
-            <Image src="/images/lets-meet.jpg" alt="Consultation meeting" fill className="object-cover" />
+            <Image
+              src="/images/lets-meet.jpg"
+              alt="Consultation meeting"
+              fill
+              className="object-cover object-top"
+            />
           </div>
         </div>
 

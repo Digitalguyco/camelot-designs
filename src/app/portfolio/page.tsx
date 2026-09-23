@@ -41,6 +41,9 @@ export default async function Portfolio() {
                     alt={project.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
+                  <span className="absolute left-0 top-4 bg-ink text-card px-3 py-1 tag">
+                    {project.projectType}
+                  </span>
                 </div>
                 <p className="tag text-ink/60 mt-3">{project.location}</p>
                 <h3 className="font-serif text-lg mt-1">{project.name}</h3>

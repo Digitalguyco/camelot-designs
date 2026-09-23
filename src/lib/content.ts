@@ -1,9 +1,9 @@
 export const site = {
   name: "Camelot Designs",
   tagline:
-    "Established in 2015, Camelot Designs is a Lagos-based interior design and procurement studio creating considered residential, commercial and hospitality spaces. We combine thoughtful design, quality materials, bespoke furniture and professional procurement to create spaces that are both distinctive and enduring.",
+    "Established in 2015, Camelot Designs is a Nigeria-based interior design and procurement studio creating considered residential, commercial and hospitality spaces. We combine thoughtful design, quality materials, bespoke furniture and professional procurement to create spaces that are both distinctive and enduring.",
   phone: "+234 809 786 6243",
-  email: "hello@camelot-designs.com",
+  email: "designs@camelot-designs.com",
   address: "332 Close, Banana Island, Ikoyi, Lagos, Nigeria",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://camelot-designs.com",
 };
@@ -60,7 +60,21 @@ export const services = [
 
 // Named processSteps, not process — that name shadows Node's global `process`,
 // which site.url above needs to read from.
-export const processSteps = ["Let's Talk", "Let's Meet", "Approval & Procurement"];
+// Placeholder write-ups — replace with the studio's own wording later.
+export const processSteps = [
+  {
+    title: "Let's Talk",
+    body: "We start with a conversation, not a questionnaire. Tell us about the space, how you actually live or work in it, and what's not working — in person or over a call, whichever is easier for you.",
+  },
+  {
+    title: "Let's Meet",
+    body: "We walk the space together, take measurements, and get a real feel for the light, the flow, and the details a photo never quite captures. This is also where we start talking budget and timeline honestly.",
+  },
+  {
+    title: "Approval & Procurement",
+    body: "You'll see a clear proposal — concept, materials, and cost — before anything is committed. Once it's approved, we handle sourcing and procurement end to end, keeping you updated at every stage.",
+  },
+];
 
 export const stats = [
   { value: "50+", label: "Projects Delivered" },
@@ -68,12 +82,15 @@ export const stats = [
   { value: "10+", label: "Years of Experience" },
 ];
 
-export const portfolio = [
-  { src: "/images/living-room-1.jpg", alt: "Light, airy living room with layered textiles" },
-  { src: "/images/living-room-2.jpg", alt: "Contemporary living room seating area" },
-  { src: "/images/navy-living-room.jpg", alt: "Living room in a rich navy palette" },
-  { src: "/images/bespoke-furniture.jpg", alt: "Bespoke furniture detail" },
-  { src: "/images/gallery-1.jpg", alt: "Interior design project detail" },
-  { src: "/images/gallery-2.jpg", alt: "Interior design project detail" },
-  { src: "/images/gallery-3.jpg", alt: "Interior design project detail" },
+// The fixed shop taxonomy — used both as the admin's category picker and
+// the shop's filter pills, so the two can never drift out of sync.
+export const productCategories = [
+  "Decor Accessories",
+  "Lightings",
+  "Furniture",
+  "Beddings / Mattresses",
+  "Cushions / Throw Blankets",
+  "Rugs",
+  "Vintage",
 ];
+

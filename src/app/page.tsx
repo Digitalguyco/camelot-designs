@@ -1,22 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { services, site, stats } from "@/lib/content";
-import { getAllProducts } from "@/lib/data/products";
+import { site, stats } from "@/lib/content";
 import { getFeaturedProjects } from "@/lib/data/projects";
-import ProductCard from "@/components/ProductCard";
 import Constellation from "@/components/Constellation";
 import CountUp from "@/components/CountUp";
 import Reveal from "@/components/Reveal";
 
-// Shop picks and featured projects come from the database — always render fresh.
+// Featured projects come from the database — always render fresh.
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [allProducts, featuredProjects] = await Promise.all([
-    getAllProducts(),
-    getFeaturedProjects(3),
-  ]);
-  const shopPicks = allProducts.filter((p) => p.status !== "sold-out").slice(0, 3);
+  const [featuredProject] = await getFeaturedProjects(1);
 
   return (
     <div>
@@ -24,7 +18,7 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-6 pt-20 sm:pt-28 pb-20">
         <div className="grid gap-12 md:grid-cols-12 md:items-center">
           <Reveal className="md:col-span-7">
-            <p className="eyebrow">Interior Design Studio — Lagos</p>
+            <p className="eyebrow">Interior Design Studio — Nigeria</p>
             <h1 className="font-serif text-4xl sm:text-5xl leading-[1.1] mt-4">
               Sophisticated interiors, <span className="italic">considered slowly.</span>
             </h1>
@@ -78,103 +72,68 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Services — editorial list, not a card grid */}
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
-        <div className="grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
-            <p className="eyebrow">What We Offer</p>
-            <h2 className="font-serif text-3xl mt-2">Services</h2>
-          </Reveal>
-          <div className="md:col-span-8 divide-y hairline border-y hairline">
-            {services.map((service, i) => (
-              <Reveal key={service.title} delay={i * 80} className="block">
-                <div className="grid gap-2 sm:grid-cols-3 py-6">
-                  <h3 className="font-serif text-xl sm:col-span-1">{service.title}</h3>
-                  <p className="text-ink/65 leading-relaxed sm:col-span-2">
-                    {service.description}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Recent work — the studio's own projects, shown alongside the shop */}
-      {featuredProjects.length > 0 && (
-        <section className="relative overflow-hidden bg-card border-y hairline py-20 sm:py-28">
-          <Constellation />
-          <div className="relative mx-auto max-w-6xl px-6">
-            <Reveal>
-              <div className="flex items-end justify-between mb-10">
-                <div>
-                  <p className="eyebrow">Portfolio</p>
-                  <h2 className="font-serif text-3xl mt-2">Recent Work</h2>
-                </div>
-                <Link href="/portfolio" className="eyebrow hover:text-ink transition-colors">
-                  View All →
-                </Link>
-              </div>
-            </Reveal>
-            <div className="grid gap-8 sm:grid-cols-3">
-              {featuredProjects.map((project, i) => (
-                <Reveal key={project.slug} delay={i * 100}>
-                  <Link href={`/portfolio/${project.slug}`} className="group block">
-                    <div className="relative aspect-[4/5] overflow-hidden">
-                      {/* Admin-uploaded content — plain <img>, see ProductCard. */}
-                      <img
-                        src={project.images[0]}
-                        alt={project.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                    <p className="tag text-ink/60 mt-3">{project.location}</p>
-                    <h3 className="font-serif text-lg mt-1">{project.name}</h3>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Shop teaser */}
-      {shopPicks.length > 0 && (
+      {/* Recent work — one project, given room to breathe rather than a grid */}
+      {featuredProject && (
         <section className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
           <Reveal>
             <div className="flex items-end justify-between mb-10">
               <div>
-                <p className="eyebrow">From the Shop</p>
-                <h2 className="font-serif text-3xl mt-2">Pieces We&apos;re Sourcing Now</h2>
+                <p className="eyebrow">Portfolio</p>
+                <h2 className="font-serif text-3xl mt-2">Recent Work</h2>
               </div>
-              <Link href="/shop" className="eyebrow hover:text-ink transition-colors">
-                Shop All →
+              <Link href="/portfolio" className="eyebrow hover:text-ink transition-colors">
+                View All →
               </Link>
             </div>
           </Reveal>
-          <div className="grid gap-x-8 gap-y-14 sm:grid-cols-3">
-            {shopPicks.map((product, i) => (
-              <Reveal key={product.slug} delay={i * 100}>
-                <ProductCard product={product} />
-              </Reveal>
-            ))}
-          </div>
+          <Reveal delay={100}>
+            <Link
+              href={`/portfolio/${featuredProject.slug}`}
+              className="group grid gap-10 md:grid-cols-12 md:items-center"
+            >
+              <div className="md:col-span-7 relative aspect-[4/3] overflow-hidden">
+                {/* Admin-uploaded content — plain <img>, see ProductCard. */}
+                <img
+                  src={featuredProject.images[0]}
+                  alt={featuredProject.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div className="md:col-span-5">
+                <p className="tag text-gold">{featuredProject.projectType}</p>
+                <h3 className="font-serif text-3xl mt-2">{featuredProject.name}</h3>
+                <p className="mt-2 text-ink/60">{featuredProject.location}</p>
+                <p className="mt-4 text-ink/65 leading-relaxed max-w-sm">{featuredProject.scope}</p>
+                <p className="eyebrow mt-6 inline-block group-hover:text-ink transition-colors">
+                  View Project →
+                </p>
+              </div>
+            </Link>
+          </Reveal>
         </section>
       )}
 
-      {/* Closing CTA */}
-      <section className="mx-auto max-w-6xl px-6 py-24 text-center">
-        <Reveal>
-          <h2 className="font-serif text-3xl sm:text-4xl max-w-lg mx-auto">
-            Ready to start your room?
-          </h2>
-          <Link
-            href="/contact"
-            className="btn-outline mt-8 inline-block px-8 py-3 text-sm transition-colors"
-          >
-            Book a Consultation
-          </Link>
-        </Reveal>
+      {/* Closing — two ways forward, side by side */}
+      <section className="relative overflow-hidden bg-card border-y hairline py-20 sm:py-28">
+        <Constellation />
+        <div className="relative mx-auto max-w-6xl px-6 grid gap-14 sm:grid-cols-2 text-center">
+          <Reveal>
+            <h2 className="font-serif text-3xl sm:text-4xl max-w-sm mx-auto">
+              Ready to design your space?
+            </h2>
+            <Link href="/contact" className="btn-primary mt-8 inline-block px-8 py-3 text-sm">
+              Book a Consultation
+            </Link>
+          </Reveal>
+          <Reveal delay={120} className="sm:border-l hairline sm:pl-14">
+            <h2 className="font-serif text-3xl sm:text-4xl max-w-sm mx-auto">
+              Shop our collections now
+            </h2>
+            <Link href="/shop" className="btn-outline mt-8 inline-block px-8 py-3 text-sm">
+              Shop All
+            </Link>
+          </Reveal>
+        </div>
       </section>
     </div>
   );

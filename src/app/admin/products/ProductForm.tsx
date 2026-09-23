@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { productCategories } from "@/lib/content";
 import type { Product } from "@/lib/data/products";
 import type { ProductFormState } from "./actions";
 
@@ -28,7 +29,23 @@ export default function ProductForm({
     <form action={formAction} className="space-y-6 max-w-xl">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" name="name" defaultValue={product?.name} required />
-        <Field label="Category" name="category" defaultValue={product?.category} required />
+        <div>
+          <label htmlFor="category" className="tag text-ink/60">
+            Category
+          </label>
+          <select
+            id="category"
+            name="category"
+            defaultValue={product?.category ?? productCategories[0]}
+            className="field mt-2 w-full px-4 py-3 text-sm"
+          >
+            {productCategories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
         <Field
           label="Price (USD)"
           name="price"
