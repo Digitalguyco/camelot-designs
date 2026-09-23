@@ -3,11 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Project } from "@/lib/data/projects";
+import ImageCarousel from "@/components/ImageCarousel";
 
 /**
  * Renders a project's images (a large hero shot next to its details, plus
- * any remaining photos in a grid below) and a shared fullscreen, swipeable
- * viewer — clicking any image opens the viewer at that photo.
+ * any remaining photos in an auto-advancing carousel below) and a shared
+ * fullscreen, swipeable viewer — clicking any image opens the viewer at
+ * that photo.
  */
 export default function ProjectGallery({ project }: { project: Project }) {
   const { images, name, location, projectType, role, scope } = project;
@@ -95,19 +97,11 @@ export default function ProjectGallery({ project }: { project: Project }) {
 
       {images.length > 1 && (
         <div className="mx-auto max-w-6xl px-6 pb-16">
-          <div className="grid gap-4 sm:grid-cols-2">
-            {images.slice(1).map((src, i) => (
-              <button
-                key={src}
-                type="button"
-                onClick={() => setOpenAt(i + 1)}
-                className="relative aspect-[4/3] overflow-hidden bg-stone cursor-zoom-in"
-                aria-label={`View photo ${i + 2} of ${name} full screen`}
-              >
-                <img src={src} alt={name} className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
+          <ImageCarousel
+            images={images.slice(1)}
+            alt={name}
+            onOpen={(relativeIndex) => setOpenAt(relativeIndex + 1)}
+          />
         </div>
       )}
 
