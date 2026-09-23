@@ -7,6 +7,14 @@ import { useEffect, useRef, useState } from "react";
  * which used to just sit in a static grid. Slides on a timer, pauses on
  * hover/touch, and can be swiped or stepped with the dots/arrows. Clicking
  * the current slide opens the shared fullscreen viewer via `onOpen`.
+ *
+ * Slides are absolutely positioned (inset-0) and cross-fade rather than
+ * sliding via a flexbox + percentage-height track — percentage heights
+ * inside an aspect-ratio box don't reliably resolve through nested flex
+ * children across browsers, which let real (differently-sized) uploaded
+ * photos render at their native size instead of the cropped 16:9 box.
+ * inset-0 ties every slide directly to the parent's actual rendered
+ * dimensions, so this holds regardless of each photo's own size.
  */
 export default function ImageCarousel({
   images,
@@ -53,22 +61,21 @@ export default function ImageCarousel({
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      <div
-        className="flex h-full transition-transform duration-700 ease-out"
-        style={{ transform: `translateX(-${current * 100}%)` }}
-      >
-        {images.map((src, i) => (
-          <button
-            key={src}
-            type="button"
-            onClick={() => onOpen(i)}
-            className="relative h-full w-full flex-shrink-0 cursor-zoom-in"
-            aria-label={`View photo ${i + 1} of ${images.length} full screen`}
-          >
-            <img src={src} alt={alt} className="w-full h-full object-cover" />
-          </button>
-        ))}
-      </div>
+      {images.map((src, i) => (
+        <button
+          key={src}
+          type="button"
+          onClick={() => onOpen(current)}
+          className={`absolute inset-0 cursor-zoom-in transition-opacity duration-700 ease-out ${
+            i === current ? "opacity-100 z-10" : "opacity-0 z-0"
+          }`}
+          aria-hidden={i !== current}
+          tabIndex={i === current ? 0 : -1}
+          aria-label={`View photo ${i + 1} of ${images.length} full screen`}
+        >
+          <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+        </button>
+      ))}
 
       {images.length > 1 && (
         <>
@@ -76,7 +83,7 @@ export default function ImageCarousel({
             type="button"
             onClick={prev}
             aria-label="Previous photo"
-            className="absolute left-2 top-1/2 -translate-y-1/2 tag text-ink/70 hover:text-gold transition-colors text-2xl leading-none px-2 py-3 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+            className="absolute z-20 left-2 top-1/2 -translate-y-1/2 tag text-ink/70 hover:text-gold transition-colors text-2xl leading-none px-2 py-3 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
           >
             ‹
           </button>
@@ -84,12 +91,12 @@ export default function ImageCarousel({
             type="button"
             onClick={next}
             aria-label="Next photo"
-            className="absolute right-2 top-1/2 -translate-y-1/2 tag text-ink/70 hover:text-gold transition-colors text-2xl leading-none px-2 py-3 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+            className="absolute z-20 right-2 top-1/2 -translate-y-1/2 tag text-ink/70 hover:text-gold transition-colors text-2xl leading-none px-2 py-3 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
           >
             ›
           </button>
 
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute z-20 bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
             {images.map((src, i) => (
               <button
                 key={src}
