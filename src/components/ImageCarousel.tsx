@@ -3,27 +3,32 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * An auto-advancing image carousel — used for a project's non-hero photos,
- * which used to just sit in a static grid. Slides on a timer, pauses on
- * hover/touch, and can be swiped or stepped with the dots/arrows. Clicking
- * the current slide opens the shared fullscreen viewer via `onOpen`.
+ * An auto-advancing image carousel — this IS a project's main photo slot
+ * (sitting where a single static hero image used to), not a separate
+ * section; it just cycles through every photo on its own when there's
+ * more than one. Pauses on hover/touch, swipeable, dots/arrows on hover.
+ * Clicking the current slide opens the shared fullscreen viewer via
+ * `onOpen`.
  *
  * Slides are absolutely positioned (inset-0) and cross-fade rather than
  * sliding via a flexbox + percentage-height track — percentage heights
  * inside an aspect-ratio box don't reliably resolve through nested flex
  * children across browsers, which let real (differently-sized) uploaded
- * photos render at their native size instead of the cropped 16:9 box.
- * inset-0 ties every slide directly to the parent's actual rendered
- * dimensions, so this holds regardless of each photo's own size.
+ * photos render at their native size instead of the cropped box. inset-0
+ * ties every slide directly to the parent's actual rendered dimensions,
+ * so this holds regardless of each photo's own size.
  */
 export default function ImageCarousel({
   images,
   alt,
   onOpen,
+  aspectClassName = "aspect-[16/9]",
 }: {
   images: string[];
   alt: string;
   onOpen: (index: number) => void;
+  /** e.g. "aspect-[4/5]" to match a portrait hero slot. */
+  aspectClassName?: string;
 }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -55,7 +60,7 @@ export default function ImageCarousel({
 
   return (
     <div
-      className="relative aspect-[16/9] overflow-hidden bg-stone group"
+      className={`relative overflow-hidden bg-stone group ${aspectClassName}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={onTouchStart}

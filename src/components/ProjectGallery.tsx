@@ -6,10 +6,10 @@ import type { Project } from "@/lib/data/projects";
 import ImageCarousel from "@/components/ImageCarousel";
 
 /**
- * Renders a project's images (a large hero shot next to its details, plus
- * any remaining photos in an auto-advancing carousel below) and a shared
- * fullscreen, swipeable viewer — clicking any image opens the viewer at
- * that photo.
+ * The project's main photo slot, next to its details — a single static
+ * image when there's only one photo, or an auto-advancing carousel
+ * cycling through all of them when there's more than one. Clicking the
+ * current photo opens a shared fullscreen, swipeable viewer.
  */
 export default function ProjectGallery({ project }: { project: Project }) {
   const { images, name, location, projectType, role, scope } = project;
@@ -61,15 +61,7 @@ export default function ProjectGallery({ project }: { project: Project }) {
   return (
     <>
       <div className="mx-auto max-w-6xl px-6 mt-8 grid gap-12 md:grid-cols-2">
-        <button
-          type="button"
-          onClick={() => setOpenAt(0)}
-          className="relative aspect-[4/5] overflow-hidden bg-stone cursor-zoom-in"
-          aria-label={`View ${name} full screen`}
-        >
-          {/* Admin-uploaded content — plain <img>, see ProductCard. */}
-          <img src={images[0]} alt={name} className="w-full h-full object-cover" />
-        </button>
+        <ImageCarousel images={images} alt={name} aspectClassName="aspect-[4/5]" onOpen={setOpenAt} />
 
         <div>
           <p className="eyebrow">{projectType}</p>
@@ -94,16 +86,6 @@ export default function ProjectGallery({ project }: { project: Project }) {
           </div>
         </div>
       </div>
-
-      {images.length > 1 && (
-        <div className="mx-auto max-w-6xl px-6 pb-16">
-          <ImageCarousel
-            images={images.slice(1)}
-            alt={name}
-            onOpen={(relativeIndex) => setOpenAt(relativeIndex + 1)}
-          />
-        </div>
-      )}
 
       {openAt !== null && (
         <div
