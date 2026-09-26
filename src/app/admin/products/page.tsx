@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getAllProducts } from "@/lib/data/products";
-import { formatPrice } from "@/lib/format";
+import { formatPriceOrRequest } from "@/lib/format";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
 import { deleteProduct } from "./actions";
 
@@ -31,7 +31,8 @@ export default async function AdminProductsPage() {
             <div className="flex-1 min-w-0">
               <p className="font-serif text-lg truncate">{product.name}</p>
               <p className="tag text-ink/55 mt-0.5">
-                {product.category} · ${formatPrice(product.priceCents)} · {STATUS_LABEL[product.status]}
+                {product.category} · {formatPriceOrRequest(product.priceCents)} ·{" "}
+                {STATUS_LABEL[product.status]}
               </p>
             </div>
             <Link href={`/admin/products/${product.id}`} className="tag text-ink/70 hover:text-gold transition-colors">

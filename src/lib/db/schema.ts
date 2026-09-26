@@ -21,7 +21,9 @@ export const products = sqliteTable("products", {
   name: text("name").notNull(),
   category: text("category").notNull(),
   // Stored as integer cents to avoid float rounding; format with formatPrice().
-  priceCents: integer("price_cents").notNull(),
+  // Nullable: a product can be listed before its price is finalized —
+  // the shop shows "Price on Request" and routes to an enquiry instead.
+  priceCents: integer("price_cents"),
   material: text("material").notNull(),
   dimensions: text("dimensions").notNull(),
   sku: text("sku").notNull(),

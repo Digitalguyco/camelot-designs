@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/lib/data/products";
-import { formatPrice } from "@/lib/format";
+import { formatPriceOrRequest } from "@/lib/format";
 
 // Available pieces carry no label — only pre-order and sold-out are flagged.
 const STATUS_BADGE: Record<"preorder" | "sold-out", { label: string; className: string }> = {
@@ -34,7 +34,9 @@ export default function ProductCard({ product }: { product: Product }) {
           <p className="eyebrow">{product.category}</p>
           <h3 className="font-serif text-lg mt-0.5">{product.name}</h3>
         </div>
-        <p className="tag text-ink/70 whitespace-nowrap">${formatPrice(product.priceCents)}</p>
+        <p className="tag text-ink/70 whitespace-nowrap">
+          {formatPriceOrRequest(product.priceCents)}
+        </p>
       </div>
     </Link>
   );

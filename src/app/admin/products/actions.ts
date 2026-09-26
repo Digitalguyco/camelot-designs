@@ -17,7 +17,7 @@ const STATUSES = new Set(["available", "preorder", "sold-out"]);
 function readCommonFields(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
-  const priceDollars = Number(formData.get("price"));
+  const priceRaw = String(formData.get("price") ?? "").trim();
   const material = String(formData.get("material") ?? "").trim();
   const dimensions = String(formData.get("dimensions") ?? "").trim();
   const sku = String(formData.get("sku") ?? "").trim();
@@ -27,17 +27,26 @@ function readCommonFields(formData: FormData) {
   if (!name || !category || !material || !dimensions || !sku || !description) {
     throw new Error("Please fill in every field.");
   }
-  if (!Number.isFinite(priceDollars) || priceDollars < 0) {
-    throw new Error("Enter a valid price.");
-  }
   if (!STATUSES.has(status)) {
     throw new Error("Invalid status.");
+  }
+
+  // Price is optional — leave it blank to list the piece as "Price on
+  // Request" while sourcing/pricing is still being worked out, and set it
+  // later without touching anything else about the listing.
+  let priceCents: number | null = null;
+  if (priceRaw !== "") {
+    const priceDollars = Number(priceRaw);
+    if (!Number.isFinite(priceDollars) || priceDollars < 0) {
+      throw new Error("Enter a valid price, or leave it blank for “Price on Request.”");
+    }
+    priceCents = Math.round(priceDollars * 100);
   }
 
   return {
     name,
     category,
-    priceCents: Math.round(priceDollars * 100),
+    priceCents,
     material,
     dimensions,
     sku,

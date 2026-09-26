@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { site } from "@/lib/content";
 import { getProductBySlug } from "@/lib/data/products";
-import { formatPrice } from "@/lib/format";
+import { formatPriceOrRequest } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
 
 // Product data lives in Postgres and changes from /admin — always render fresh.
@@ -60,13 +60,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     sku: product.sku,
     image: product.images,
     category: product.category,
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "USD",
-      price: (product.priceCents / 100).toFixed(2),
-      availability: AVAILABILITY[product.status],
-      url: `${site.url}/shop/${product.slug}`,
-    },
+    // Omitted entirely (rather than a made-up price) while pricing is
+    // still being finalized — an Offer without a real price would be
+    // inaccurate structured data.
+    ...(product.priceCents !== null && {
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "USD",
+        price: (product.priceCents / 100).toFixed(2),
+        availability: AVAILABILITY[product.status],
+        url: `${site.url}/shop/${product.slug}`,
+      },
+    }),
   };
 
   return (
@@ -97,7 +102,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div>
           <p className="eyebrow">{product.category}</p>
           <h1 className="font-serif text-3xl sm:text-4xl mt-2">{product.name}</h1>
-          <p className="tag text-ink/70 mt-3 text-sm">${formatPrice(product.priceCents)}</p>
+          <p className="tag text-ink/70 mt-3 text-sm">{formatPriceOrRequest(product.priceCents)}</p>
 
           <p className="mt-6 text-ink/70 leading-relaxed max-w-md">{product.description}</p>
 

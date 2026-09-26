@@ -47,13 +47,15 @@ export default function ProductForm({
           </select>
         </div>
         <Field
-          label="Price (USD)"
+          label="Price (USD) — leave blank for “Price on Request”"
           name="price"
           type="number"
           step="0.01"
           min="0"
-          defaultValue={product ? (product.priceCents / 100).toFixed(2) : undefined}
-          required
+          placeholder="e.g. 120.00"
+          defaultValue={
+            product?.priceCents != null ? (product.priceCents / 100).toFixed(2) : undefined
+          }
         />
         <Field label="SKU" name="sku" defaultValue={product?.sku} required />
         <Field label="Material" name="material" defaultValue={product?.material} required />
@@ -150,6 +152,7 @@ function Field({
   type = "text",
   step,
   min,
+  placeholder,
 }: {
   label: string;
   name: string;
@@ -158,6 +161,7 @@ function Field({
   type?: string;
   step?: string;
   min?: string;
+  placeholder?: string;
 }) {
   return (
     <div>
@@ -170,6 +174,7 @@ function Field({
         type={type}
         step={step}
         min={min}
+        placeholder={placeholder}
         defaultValue={defaultValue}
         required={required}
         className="field mt-2 w-full px-4 py-3 text-sm"
