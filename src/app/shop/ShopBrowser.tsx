@@ -2,18 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import { productCategories } from "@/lib/content";
 import type { Product } from "@/lib/data/products";
-
-// Fixed taxonomy, not derived from whatever's currently in stock — the
-// admin's category picker uses the same list (see ProductForm), so filters
-// stay meaningful even as inventory in a given category comes and goes.
-const categories = ["All", ...productCategories];
 
 const PAGE_SIZE = 24;
 
 export default function ShopBrowser({ products }: { products: Product[] }) {
-  const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const gridTopRef = useRef<HTMLDivElement>(null);
@@ -22,17 +15,14 @@ export default function ShopBrowser({ products }: { products: Product[] }) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return products.filter((p) => {
-      const matchesCategory = category === "All" || p.category === category;
-      const matchesQuery =
-        !q || p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
-      return matchesCategory && matchesQuery;
+      return !q || p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
     });
-  }, [products, category, query]);
+  }, [products, query]);
 
-  // Changing a filter should always land back on page 1 of the new result set.
+  // Changing the search should always land back on page 1 of the new result set.
   useEffect(() => {
     setPage(1);
-  }, [category, query]);
+  }, [query]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
@@ -50,31 +40,14 @@ export default function ShopBrowser({ products }: { products: Product[] }) {
 
   return (
     <div>
-      <div ref={gridTopRef} className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {categories.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => setCategory(c)}
-              className={`tag px-4 py-2 border transition-colors ${
-                category === c
-                  ? "border-gold bg-gold text-parchment"
-                  : "border-ink/25 text-ink/70 hover:border-gold hover:text-gold"
-              }`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-
+      <div ref={gridTopRef} className="flex justify-end">
         <label className="relative block w-full sm:w-64">
           <span className="sr-only">Search products</span>
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search the shop…"
+            placeholder="Search…"
             className="field w-full px-4 py-2.5 text-sm"
           />
         </label>
@@ -82,8 +55,7 @@ export default function ShopBrowser({ products }: { products: Product[] }) {
 
       {filtered.length === 0 ? (
         <p className="mt-14 text-ink/60">
-          Nothing matches &ldquo;{query}&rdquo;{category !== "All" ? ` in ${category}` : ""} — try
-          a different search or category.
+          Nothing matches &ldquo;{query}&rdquo; — try a different search.
         </p>
       ) : (
         <>

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/lib/content";
-import { getAllProducts } from "@/lib/data/products";
+import { site, categoryToSlug } from "@/lib/content";
+import { getAllProducts, getCategoryShowcases } from "@/lib/data/products";
 import { getPublishedPosts } from "@/lib/data/posts";
 import { getAllProjects } from "@/lib/data/projects";
 
@@ -9,16 +9,23 @@ export const dynamic = "force-dynamic";
 const staticRoutes = ["", "/about", "/portfolio", "/shop", "/blog", "/contact"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, posts, projects] = await Promise.all([
+  const [products, posts, projects, categories] = await Promise.all([
     getAllProducts(),
     getPublishedPosts(),
     getAllProjects(),
+    getCategoryShowcases(),
   ]);
 
   const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((path) => ({
     url: `${site.url}${path}`,
     changeFrequency: path === "" ? "weekly" : "monthly",
     priority: path === "" ? 1 : 0.7,
+  }));
+
+  const categoryEntries: MetadataRoute.Sitemap = categories.map(({ category }) => ({
+    url: `${site.url}/shop/category/${categoryToSlug(category)}`,
+    changeFrequency: "weekly",
+    priority: 0.65,
   }));
 
   const productEntries: MetadataRoute.Sitemap = products.map((p) => ({
@@ -42,5 +49,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticEntries, ...productEntries, ...postEntries, ...projectEntries];
+  return [...staticEntries, ...categoryEntries, ...productEntries, ...postEntries, ...projectEntries];
 }

@@ -1,3 +1,5 @@
+import { slugify } from "@/lib/slug";
+
 export const site = {
   name: "Camelot Designs",
   tagline:
@@ -83,7 +85,7 @@ export const stats = [
 ];
 
 // The fixed shop taxonomy — used both as the admin's category picker and
-// the shop's filter pills, so the two can never drift out of sync.
+// the shop's category tiles, so the two can never drift out of sync.
 export const productCategories = [
   "Decor Accessories",
   "Lightings",
@@ -93,4 +95,19 @@ export const productCategories = [
   "Rugs",
   "Vintage",
 ];
+
+const CATEGORY_SLUGS: Record<string, string> = Object.fromEntries(
+  productCategories.map((c) => [c, slugify(c)]),
+);
+const SLUG_TO_CATEGORY: Record<string, string> = Object.fromEntries(
+  productCategories.map((c) => [slugify(c), c]),
+);
+
+export function categoryToSlug(category: string): string {
+  return CATEGORY_SLUGS[category] ?? slugify(category);
+}
+
+export function categoryFromSlug(slug: string): string | undefined {
+  return SLUG_TO_CATEGORY[slug];
+}
 

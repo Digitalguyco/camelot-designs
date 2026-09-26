@@ -5,6 +5,7 @@ import { site } from "@/lib/content";
 import { getProductBySlug } from "@/lib/data/products";
 import { formatPriceOrRequest } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
+import ProductGallery from "@/components/ProductGallery";
 
 // Product data lives in Postgres and changes from /admin — always render fresh.
 export const dynamic = "force-dynamic";
@@ -82,22 +83,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </Link>
 
       <div className="mt-8 grid gap-12 md:grid-cols-2">
-        <div className="relative aspect-[4/5] overflow-hidden bg-stone">
-          {/* Admin-uploaded content — plain <img>, see ProductCard. */}
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className={`w-full h-full object-cover ${soldOut ? "grayscale opacity-60" : ""}`}
-          />
-          {soldOut && (
-            <span className="absolute left-0 top-4 bg-ink text-card px-3 py-1 tag">Sold Out</span>
-          )}
-          {preorder && (
-            <span className="absolute left-0 top-4 bg-gold text-parchment px-3 py-1 tag">
-              Pre-Order
-            </span>
-          )}
-        </div>
+        <ProductGallery
+          images={product.images}
+          alt={product.name}
+          soldOut={soldOut}
+          preorder={preorder}
+        />
 
         <div>
           <p className="eyebrow">{product.category}</p>

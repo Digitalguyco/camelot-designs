@@ -1,6 +1,7 @@
 import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { products, type Product } from "@/lib/db/schema";
+import { productCategories } from "@/lib/content";
 
 export type { Product };
 
@@ -13,6 +14,31 @@ function statusRank(p: Pick<Product, "status">) {
 export async function getAllProducts(): Promise<Product[]> {
   const rows = await db.select().from(products).orderBy(desc(products.createdAt));
   return [...rows].sort((a, b) => statusRank(a) - statusRank(b));
+}
+
+export async function getProductsByCategory(category: string): Promise<Product[]> {
+  const rows = await db
+    .select()
+    .from(products)
+    .where(eq(products.category, category))
+    .orderBy(desc(products.createdAt));
+  return [...rows].sort((a, b) => statusRank(a) - statusRank(b));
+}
+
+// The shop's front page shows one tile per category that actually has
+// stock — each tile's photo is that category's most recently added
+// product, so it's always a real, currently-valid image.
+export async function getCategoryShowcases(): Promise<
+  { category: string; image: string; count: number }[]
+> {
+  const all = await getAllProducts();
+  return productCategories
+    .map((category) => {
+      const inCategory = all.filter((p) => p.category === category);
+      if (inCategory.length === 0) return null;
+      return { category, image: inCategory[0].images[0], count: inCategory.length };
+    })
+    .filter((c): c is { category: string; image: string; count: number } => c !== null);
 }
 
 // A fresh random sample on every call (SQLite RANDOM()) — used for the
