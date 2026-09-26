@@ -49,12 +49,16 @@ export default function ProjectForm({
 
       <div>
         <label htmlFor="concept" className="tag text-ink/60">
-          Design Concept
+          Design Concept — full write-up
         </label>
+        <p className="mt-1 text-xs text-ink/45">
+          Leave a blank line between paragraphs — each one is shown as its own paragraph on the
+          project page.
+        </p>
         <textarea
           id="concept"
           name="concept"
-          rows={5}
+          rows={12}
           defaultValue={project?.concept}
           required
           className="field mt-2 w-full px-4 py-3 text-sm leading-relaxed"
@@ -63,7 +67,7 @@ export default function ProjectForm({
 
       <div>
         <label htmlFor="materials" className="tag text-ink/60">
-          Materials &amp; Furniture
+          Materials
         </label>
         <textarea
           id="materials"
@@ -71,6 +75,19 @@ export default function ProjectForm({
           rows={3}
           defaultValue={project?.materials}
           required
+          className="field mt-2 w-full px-4 py-3 text-sm leading-relaxed"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="customFurniture" className="tag text-ink/60">
+          Custom Furniture — optional
+        </label>
+        <textarea
+          id="customFurniture"
+          name="customFurniture"
+          rows={3}
+          defaultValue={project?.customFurniture ?? ""}
           className="field mt-2 w-full px-4 py-3 text-sm leading-relaxed"
         />
       </div>

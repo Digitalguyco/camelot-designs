@@ -19,13 +19,15 @@ function readCommonFields(formData: FormData) {
   const scope = String(formData.get("scope") ?? "").trim();
   const concept = String(formData.get("concept") ?? "").trim();
   const materials = String(formData.get("materials") ?? "").trim();
+  const customFurnitureRaw = String(formData.get("customFurniture") ?? "").trim();
+  const customFurniture = customFurnitureRaw === "" ? null : customFurnitureRaw;
   const role = String(formData.get("role") ?? "").trim();
 
   if (!name || !location || !projectType || !scope || !concept || !materials || !role) {
     throw new Error("Please fill in every field.");
   }
 
-  return { name, location, projectType, scope, concept, materials, role };
+  return { name, location, projectType, scope, concept, materials, customFurniture, role };
 }
 
 async function uploadNewImages(formData: FormData): Promise<string[]> {

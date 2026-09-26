@@ -67,8 +67,12 @@ export const projects = sqliteTable("projects", {
   location: text("location").notNull(),
   projectType: text("project_type").notNull(),
   scope: text("scope").notNull(),
+  // Full write-up — may contain multiple paragraphs separated by a blank
+  // line; rendered as separate <p> tags rather than compressed into one.
   concept: text("concept").notNull(),
   materials: text("materials").notNull(),
+  // Optional — only some projects have bespoke pieces worth calling out.
+  customFurniture: text("custom_furniture"),
   role: text("role").notNull(),
   // Ordered array of /uploads/... paths. First entry is the cover image.
   images: text("images", { mode: "json" }).$type<string[]>().notNull().default([]),

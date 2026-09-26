@@ -67,12 +67,22 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <div className="mx-auto max-w-3xl px-6 py-16 space-y-10">
         <section>
           <p className="eyebrow">Design Concept</p>
-          <p className="mt-3 text-ink/75 leading-relaxed text-lg">{project.concept}</p>
+          <div className="mt-3 space-y-5 text-ink/75 leading-relaxed text-lg">
+            {project.concept.split(/\n\s*\n/).map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
         </section>
         <section>
-          <p className="eyebrow">Materials &amp; Furniture</p>
+          <p className="eyebrow">Materials</p>
           <p className="mt-3 text-ink/75 leading-relaxed">{project.materials}</p>
         </section>
+        {project.customFurniture && (
+          <section>
+            <p className="eyebrow">Custom Furniture</p>
+            <p className="mt-3 text-ink/75 leading-relaxed">{project.customFurniture}</p>
+          </section>
+        )}
       </div>
 
       {more.length > 0 && (

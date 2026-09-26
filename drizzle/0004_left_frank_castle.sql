@@ -1,0 +1,1 @@
+ALTER TABLE `projects` ADD `custom_furniture` text;
