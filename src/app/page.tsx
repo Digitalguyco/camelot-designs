@@ -2,15 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { site, stats } from "@/lib/content";
 import { getFeaturedProjects } from "@/lib/data/projects";
+import { getRandomProducts } from "@/lib/data/products";
 import Constellation from "@/components/Constellation";
 import CountUp from "@/components/CountUp";
 import Reveal from "@/components/Reveal";
 
-// Featured projects come from the database — always render fresh.
+// Featured projects and the shop teaser come from the database — always
+// render fresh (the teaser is also randomized per request, see
+// getRandomProducts).
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [featuredProject] = await getFeaturedProjects(1);
+  const shopPreview = await getRandomProducts(4);
 
   return (
     <div>
@@ -126,6 +130,27 @@ export default async function Home() {
             </Link>
           </Reveal>
           <Reveal delay={120} className="sm:border-l hairline sm:pl-14">
+            {shopPreview.length > 0 && (
+              <div className="flex justify-center gap-3 mb-8">
+                {shopPreview.map((product, i) => (
+                  <Link
+                    key={product.id}
+                    href={`/shop/${product.slug}`}
+                    className={`group block w-16 sm:w-20 shrink-0 border border-gold/40 p-1 transition-transform hover:-translate-y-1 ${
+                      i % 2 === 1 ? "translate-y-3" : ""
+                    }`}
+                  >
+                    <div className="relative aspect-square overflow-hidden bg-stone">
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
             <h2 className="font-serif text-3xl sm:text-4xl max-w-sm mx-auto">
               Shop our collections now
             </h2>
