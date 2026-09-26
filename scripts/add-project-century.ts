@@ -77,9 +77,6 @@ async function main() {
     materials:
       "Warm neutral and deep wood-tone finishes, fluted wall panelling, burgundy soft furnishings (cushions and rug), and statement artwork throughout.",
     images,
-    // Leave unfeatured by default — toggle in /admin/projects if this
-    // should replace what's currently shown on the homepage.
-    featured: false,
   });
 
   console.log(`Done — created project "${slug}" with ${images.length} images.`);

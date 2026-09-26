@@ -20,13 +20,12 @@ function readCommonFields(formData: FormData) {
   const concept = String(formData.get("concept") ?? "").trim();
   const materials = String(formData.get("materials") ?? "").trim();
   const role = String(formData.get("role") ?? "").trim();
-  const featured = formData.get("featured") === "on";
 
   if (!name || !location || !projectType || !scope || !concept || !materials || !role) {
     throw new Error("Please fill in every field.");
   }
 
-  return { name, location, projectType, scope, concept, materials, role, featured };
+  return { name, location, projectType, scope, concept, materials, role };
 }
 
 async function uploadNewImages(formData: FormData): Promise<string[]> {

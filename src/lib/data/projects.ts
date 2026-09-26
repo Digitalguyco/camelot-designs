@@ -8,11 +8,11 @@ export async function getAllProjects(): Promise<Project[]> {
   return db.select().from(projects).orderBy(desc(projects.createdAt));
 }
 
-export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
-  const all = await getAllProjects();
-  const featured = all.filter((p) => p.featured);
-  const rest = all.filter((p) => !p.featured);
-  return [...featured, ...rest].slice(0, limit);
+// Homepage "Recent Work" — always the most recently added project, so a
+// new upload replaces whatever was there without any manual curation step.
+export async function getMostRecentProject(): Promise<Project | undefined> {
+  const [row] = await db.select().from(projects).orderBy(desc(projects.createdAt)).limit(1);
+  return row;
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | undefined> {

@@ -14,6 +14,10 @@ export default async function AdminProjectsPage() {
           New Project
         </Link>
       </div>
+      <p className="tag text-ink/50 mt-2">
+        The homepage&rsquo;s Recent Work section always shows whichever project was added most
+        recently.
+      </p>
 
       <div className="mt-8 divide-y hairline border-t border-b hairline">
         {items.length === 0 && <p className="py-6 text-ink/60 text-sm">No projects yet.</p>}
@@ -25,9 +29,7 @@ export default async function AdminProjectsPage() {
               className="h-16 w-16 object-cover bg-stone flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <p className="font-serif text-lg truncate">
-                {project.name} {project.featured && <span className="tag text-gold ml-2">Featured</span>}
-              </p>
+              <p className="font-serif text-lg truncate">{project.name}</p>
               <p className="tag text-ink/55 mt-0.5">
                 {project.location} · {project.projectType}
               </p>

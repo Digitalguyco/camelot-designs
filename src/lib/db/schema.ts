@@ -72,7 +72,6 @@ export const projects = sqliteTable("projects", {
   role: text("role").notNull(),
   // Ordered array of /uploads/... paths. First entry is the cover image.
   images: text("images", { mode: "json" }).$type<string[]>().notNull().default([]),
-  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),

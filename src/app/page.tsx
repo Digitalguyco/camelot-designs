@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site, stats } from "@/lib/content";
-import { getFeaturedProjects } from "@/lib/data/projects";
+import { getMostRecentProject } from "@/lib/data/projects";
 import { getRandomProducts } from "@/lib/data/products";
 import Constellation from "@/components/Constellation";
 import CountUp from "@/components/CountUp";
@@ -13,7 +13,7 @@ import Reveal from "@/components/Reveal";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [featuredProject] = await getFeaturedProjects(1);
+  const featuredProject = await getMostRecentProject();
   const shopPreview = await getRandomProducts(4);
 
   return (

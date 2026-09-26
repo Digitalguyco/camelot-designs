@@ -75,11 +75,6 @@ export default function ProjectForm({
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-ink/70">
-        <input type="checkbox" name="featured" defaultChecked={project?.featured ?? false} />
-        Featured (shown first on the homepage)
-      </label>
-
       {project && keepImages.length > 0 && (
         <div>
           <p className="tag text-ink/60">Current images (first is the cover)</p>
