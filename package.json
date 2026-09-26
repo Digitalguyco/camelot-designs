@@ -10,7 +10,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "import:catalog": "tsx scripts/import-catalog.ts"
   },
   "dependencies": {
     "@tiptap/pm": "^3.31.3",
