@@ -36,11 +36,11 @@ function readCommonFields(formData: FormData) {
   // later without touching anything else about the listing.
   let priceCents: number | null = null;
   if (priceRaw !== "") {
-    const priceDollars = Number(priceRaw);
-    if (!Number.isFinite(priceDollars) || priceDollars < 0) {
+    const priceNaira = Number(priceRaw);
+    if (!Number.isFinite(priceNaira) || priceNaira < 0) {
       throw new Error("Enter a valid price, or leave it blank for “Price on Request.”");
     }
-    priceCents = Math.round(priceDollars * 100);
+    priceCents = Math.round(priceNaira * 100);
   }
 
   return {

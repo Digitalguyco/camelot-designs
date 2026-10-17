@@ -47,12 +47,12 @@ export default function ProductForm({
           </select>
         </div>
         <Field
-          label="Price (USD) — leave blank for “Price on Request”"
+          label="Price (₦ Naira) — leave blank for “Price on Request”"
           name="price"
           type="number"
           step="0.01"
           min="0"
-          placeholder="e.g. 120.00"
+          placeholder="e.g. 326000"
           defaultValue={
             product?.priceCents != null ? (product.priceCents / 100).toFixed(2) : undefined
           }

@@ -4,7 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import CookieBanner from "@/components/CookieBanner";
+import CurrencyProvider from "@/components/CurrencyProvider";
 import { site } from "@/lib/content";
+import { getNgnPerUsd } from "@/lib/exchangeRate";
 import "./globals.css";
 
 // One typeface, three weights — mirrors the studio's original site, which
@@ -68,11 +70,13 @@ const organizationJsonLd = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const ngnPerUsd = await getNgnPerUsd();
+
   return (
     <html
       lang="en"
@@ -86,12 +90,14 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Header />
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <CookieBanner />
+        <CurrencyProvider ngnPerUsd={ngnPerUsd}>
+          <Header />
+          <main id="main-content" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <CookieBanner />
+        </CurrencyProvider>
       </body>
     </html>
   );

@@ -20,7 +20,9 @@ export const products = sqliteTable("products", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   category: text("category").notNull(),
-  // Stored as integer cents to avoid float rounding; format with formatPrice().
+  // Stored as integer kobo (1 Naira = 100 kobo) to avoid float rounding —
+  // Naira is the canonical currency (the real supplier catalog's own
+  // pricing); USD is a converted display option only, see Price.tsx.
   // Nullable: a product can be listed before its price is finalized —
   // the shop shows "Price on Request" and routes to an enquiry instead.
   priceCents: integer("price_cents"),
