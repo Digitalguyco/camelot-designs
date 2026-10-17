@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getAllProducts, startingPriceCents } from "@/lib/data/products";
+import { getAllProducts } from "@/lib/data/products";
+import { startingPriceCents } from "@/lib/pricing";
 import { formatNaira, PRICE_ON_REQUEST } from "@/lib/format";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
 import { deleteProduct } from "./actions";

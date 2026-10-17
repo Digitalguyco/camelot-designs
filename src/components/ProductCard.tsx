@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { startingPriceCents, type ProductWithVariants } from "@/lib/data/products";
+import type { ProductWithVariants } from "@/lib/data/products";
+import { startingPriceCents } from "@/lib/pricing";
 import Price from "@/components/Price";
 
 // Available pieces carry no label — only pre-order and sold-out are flagged.

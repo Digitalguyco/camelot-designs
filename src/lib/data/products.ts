@@ -30,12 +30,6 @@ async function attachVariants(rows: Product[]): Promise<ProductWithVariants[]> {
   return rows.map((r) => ({ ...r, variants: byProduct.get(r.id) ?? [] }));
 }
 
-/** The lowest-priced variant's cents, or null if every variant is unpriced. */
-export function startingPriceCents(product: Pick<ProductWithVariants, "variants">): number | null {
-  const priced = product.variants.map((v) => v.priceCents).filter((c): c is number => c !== null);
-  return priced.length > 0 ? Math.min(...priced) : null;
-}
-
 export async function getAllProducts(): Promise<ProductWithVariants[]> {
   const rows = await db.select().from(products).orderBy(desc(products.createdAt));
   const sorted = [...rows].sort((a, b) => statusRank(a) - statusRank(b));
