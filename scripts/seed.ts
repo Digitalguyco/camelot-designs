@@ -1,8 +1,10 @@
 /**
  * One-time (idempotent) seed: creates the admin account from
  * SEED_ADMIN_EMAIL/SEED_ADMIN_PASSWORD, and — only if the tables are empty —
- * loads the 9 demo products / 5 demo posts that used to live in content.ts,
- * so the site isn't blank on first launch. Replace these via /admin once live.
+ * loads the 5 demo posts that used to live in content.ts, so the blog isn't
+ * blank on first launch. Replace these via /admin once live. (Products
+ * don't get a demo seed — the real supplier catalog is the only product
+ * data this site has ever shipped with; see scripts/rebuild-catalog-with-variants.ts.)
  *
  * Run with: npm run seed
  */
@@ -10,9 +12,9 @@ import "./load-env";
 import { hash } from "bcryptjs";
 import { count } from "drizzle-orm";
 import { db } from "../src/lib/db";
-import { adminUsers, posts, products, projects } from "../src/lib/db/schema";
+import { adminUsers, posts, projects } from "../src/lib/db/schema";
 
-async function tableCount(table: typeof products | typeof posts | typeof projects) {
+async function tableCount(table: typeof posts | typeof projects) {
   const [row] = await db.select({ n: count() }).from(table);
   return row?.n ?? 0;
 }
@@ -34,137 +36,6 @@ async function seedAdmin() {
   const passwordHash = await hash(password, 12);
   await db.insert(adminUsers).values({ email, passwordHash });
   console.log(`Created admin user: ${email}`);
-}
-
-async function seedProducts() {
-  const existing = await tableCount(products);
-  if (existing > 0) {
-    console.log(`${existing} product(s) already exist — skipping product seed.`);
-    return;
-  }
-
-  const demoProducts = [
-    {
-      slug: "tufted-accent-chair",
-      name: "The Tufted Accent Chair",
-      category: "Furniture",
-      priceCents: 124000,
-      material: "Boucle, turned beechwood",
-      dimensions: "26\"W x 28\"D x 33\"H",
-      sku: "CD-014",
-      status: "available" as const,
-      description:
-        "A quiet, sculptural chair upholstered in undyed boucle over a hand-turned beechwood frame. Sits low and wide for reading corners and window seats.",
-      images: ["/images/shop/tufted-accent-chair.jpg"],
-    },
-    {
-      slug: "nordic-shell-chair",
-      name: "The Nordic Shell Chair",
-      category: "Furniture",
-      priceCents: 68000,
-      material: "Molded shell, ash legs",
-      dimensions: "20\"W x 22\"D x 31\"H",
-      sku: "CD-021",
-      status: "available" as const,
-      description:
-        "A pared-back dining companion with a single-shell seat and splayed ash legs. Sold individually; pairs well in twos along a farm table.",
-      images: ["/images/shop/nordic-shell-chair.jpg"],
-    },
-    {
-      slug: "larkspur-velvet-sofa",
-      name: "The Larkspur Velvet Sofa",
-      category: "Furniture",
-      priceCents: 345000,
-      material: "Emerald velvet, brass feet",
-      dimensions: "82\"W x 34\"D x 31\"H",
-      sku: "CD-002",
-      status: "sold-out" as const,
-      description:
-        "Deep-seated and generously scaled, upholstered in an emerald cotton velvet with polished brass feet. Our most requested piece — currently sold out while we source the next run of fabric.",
-      images: ["/images/shop/larkspur-velvet-sofa.jpg"],
-    },
-    {
-      slug: "ellery-loveseat",
-      name: "The Ellery Loveseat",
-      category: "Furniture",
-      priceCents: 218000,
-      material: "Burnt-sienna linen, walnut legs",
-      dimensions: "62\"W x 33\"D x 30\"H",
-      sku: "CD-009",
-      status: "available" as const,
-      description:
-        "A compact loveseat in a burnt-sienna linen blend, built for reading nooks and entryway benches where a full sofa won't fit.",
-      images: ["/images/shop/ellery-loveseat.jpg"],
-    },
-    {
-      slug: "reverie-chaise",
-      name: "The Reverie Chaise",
-      category: "Furniture",
-      priceCents: 289000,
-      material: "Camel suede, oak frame",
-      dimensions: "64\"W x 30\"D x 29\"H",
-      sku: "CD-011",
-      status: "preorder" as const,
-      description:
-        "An armless chaise in camel suede, styled here with a linen throw and dried pampas. Made to order in small batches — reserve now for delivery in the next run, roughly 10–12 weeks out.",
-      images: ["/images/shop/reverie-chaise.jpg"],
-    },
-    {
-      slug: "bedside-table",
-      name: "The Bedside Table",
-      category: "Furniture",
-      priceCents: 42000,
-      material: "White lacquer, dipped oak legs",
-      dimensions: "16\"W x 16\"D x 22\"H",
-      sku: "CD-033",
-      status: "available" as const,
-      description:
-        "A slim, round bedside table in white lacquer with dipped oak legs — enough surface for a lamp, a book, and a glass of water.",
-      images: ["/images/shop/bedside-table.jpg"],
-    },
-    {
-      slug: "studio-task-lamp",
-      name: "The Studio Task Lamp",
-      category: "Lightings",
-      priceCents: 34000,
-      material: "Matte steel",
-      dimensions: "7\"W x 20\"H, adjustable",
-      sku: "CD-045",
-      status: "available" as const,
-      description:
-        "An articulating task lamp in matte steel, built for desks and reading chairs. The joint holds any angle without drifting.",
-      images: ["/images/shop/studio-task-lamp.jpg"],
-    },
-    {
-      slug: "heirloom-rug",
-      name: "The Heirloom Rug",
-      category: "Rugs",
-      priceCents: 186000,
-      material: "Hand-knotted wool",
-      dimensions: "8' x 10'",
-      sku: "CD-058",
-      status: "preorder" as const,
-      description:
-        "Hand-knotted wool in a soft, faded palette that reads as though it's always been there. Each rug varies slightly — a mark of the loom, not a flaw. Knotted to order; expect 12–16 weeks from reservation to delivery.",
-      images: ["/images/shop/heirloom-rug.jpg"],
-    },
-    {
-      slug: "aloe-planter",
-      name: "The Aloe Planter",
-      category: "Decor Accessories",
-      priceCents: 6400,
-      material: "Glazed ceramic",
-      dimensions: "6\"W x 6\"H",
-      sku: "CD-071",
-      status: "available" as const,
-      description:
-        "A small glazed ceramic planter, shown here with aloe. Good on a bedside table, a bathroom shelf, or a kitchen windowsill.",
-      images: ["/images/shop/aloe-planter.jpg"],
-    },
-  ];
-
-  await db.insert(products).values(demoProducts);
-  console.log(`Seeded ${demoProducts.length} products.`);
 }
 
 async function seedPosts() {
@@ -325,7 +196,6 @@ async function seedProjects() {
 
 async function main() {
   await seedAdmin();
-  await seedProducts();
   await seedPosts();
   await seedProjects();
   process.exit(0);
