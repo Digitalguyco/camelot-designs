@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllProducts } from "@/lib/data/products";
+import { getAllProducts, startingPriceCents } from "@/lib/data/products";
 import { formatNaira, PRICE_ON_REQUEST } from "@/lib/format";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
 import { deleteProduct } from "./actions";
@@ -29,7 +29,7 @@ export default async function AdminProductsPage({
     ? all.filter(
         (p) =>
           p.name.toLowerCase().includes(query.toLowerCase()) ||
-          p.sku.toLowerCase().includes(query.toLowerCase()),
+          p.variants.some((v) => v.sku.toLowerCase().includes(query.toLowerCase())),
       )
     : all;
 
@@ -75,7 +75,9 @@ export default async function AdminProductsPage({
             <div className="flex-1 min-w-0">
               <p className="font-serif text-lg truncate">{product.name}</p>
               <p className="tag text-ink/55 mt-0.5">
-                {product.sku} · {product.category} · {priceLabel(product.priceCents)} ·{" "}
+                {product.variants.map((v) => v.sku).join(", ")} · {product.category} ·{" "}
+                {priceLabel(startingPriceCents(product))}
+                {product.variants.length > 1 ? ` (${product.variants.length} options)` : ""} ·{" "}
                 {STATUS_LABEL[product.status]}
               </p>
             </div>

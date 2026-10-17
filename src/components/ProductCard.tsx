@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Product } from "@/lib/data/products";
+import { startingPriceCents, type ProductWithVariants } from "@/lib/data/products";
 import Price from "@/components/Price";
 
 // Available pieces carry no label — only pre-order and sold-out are flagged.
@@ -8,9 +8,10 @@ const STATUS_BADGE: Record<"preorder" | "sold-out", { label: string; className: 
   "sold-out": { label: "Sold Out", className: "bg-ink text-card" },
 };
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product }: { product: ProductWithVariants }) {
   const badge = product.status !== "available" ? STATUS_BADGE[product.status] : null;
   const soldOut = product.status === "sold-out";
+  const hasPriceSpread = new Set(product.variants.map((v) => v.priceCents)).size > 1;
 
   return (
     <Link href={`/shop/${product.slug}`} className="group block">
@@ -35,7 +36,8 @@ export default function ProductCard({ product }: { product: Product }) {
           <h3 className="font-serif text-lg mt-0.5">{product.name}</h3>
         </div>
         <p className="tag text-ink/70 whitespace-nowrap">
-          <Price cents={product.priceCents} />
+          {hasPriceSpread && "From "}
+          <Price cents={startingPriceCents(product)} />
         </p>
       </div>
     </Link>

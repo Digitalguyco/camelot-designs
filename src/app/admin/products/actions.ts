@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { products } from "@/lib/db/schema";
+import { products, productVariants } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/session";
 import { saveUploadedImage } from "@/lib/uploads";
 import { uniqueSlug } from "@/lib/slug";
@@ -14,50 +14,81 @@ export type ProductFormState = { error?: string };
 
 const STATUSES = new Set(["available", "preorder", "sold-out"]);
 
+type VariantInput = { label: string; sku: string; dimensions: string; priceCents: number | null };
+
 function readCommonFields(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
-  const priceRaw = String(formData.get("price") ?? "").trim();
   const material = String(formData.get("material") ?? "").trim();
-  const dimensions = String(formData.get("dimensions") ?? "").trim();
-  const sku = String(formData.get("sku") ?? "").trim();
   const status = String(formData.get("status") ?? "available");
   const description = String(formData.get("description") ?? "").trim();
 
-  if (!name || !category || !material || !dimensions || !sku || !description) {
+  if (!name || !category || !material || !description) {
     throw new Error("Please fill in every field.");
   }
   if (!STATUSES.has(status)) {
     throw new Error("Invalid status.");
   }
 
-  // Price is optional — leave it blank to list the piece as "Price on
-  // Request" while sourcing/pricing is still being worked out, and set it
-  // later without touching anything else about the listing.
-  let priceCents: number | null = null;
-  if (priceRaw !== "") {
-    const priceNaira = Number(priceRaw);
-    if (!Number.isFinite(priceNaira) || priceNaira < 0) {
-      throw new Error("Enter a valid price, or leave it blank for “Price on Request.”");
-    }
-    priceCents = Math.round(priceNaira * 100);
+  return { name, category, material, status: status as "available" | "preorder" | "sold-out", description };
+}
+
+function readVariants(formData: FormData): VariantInput[] {
+  const raw = String(formData.get("variants") ?? "[]");
+  let parsed: { label?: string; sku?: string; dimensions?: string; price?: string }[];
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error("Could not read the purchase options — try again.");
   }
 
-  return {
-    name,
-    category,
-    priceCents,
-    material,
-    dimensions,
-    sku,
-    status: status as "available" | "preorder" | "sold-out",
-    description,
-  };
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    throw new Error("Add at least one purchase option (size/variant).");
+  }
+
+  return parsed.map((row, i) => {
+    const sku = String(row.sku ?? "").trim();
+    const dimensions = String(row.dimensions ?? "").trim();
+    const label = String(row.label ?? "").trim();
+    const priceRaw = String(row.price ?? "").trim();
+
+    if (!sku || !dimensions) {
+      throw new Error(`Purchase option ${i + 1} needs a SKU and dimensions.`);
+    }
+
+    // Price is optional — leave it blank to list the piece as "Price on
+    // Request" while sourcing/pricing is still being worked out, and set it
+    // later without touching anything else about the listing.
+    let priceCents: number | null = null;
+    if (priceRaw !== "") {
+      const priceNaira = Number(priceRaw);
+      if (!Number.isFinite(priceNaira) || priceNaira < 0) {
+        throw new Error(`Purchase option ${i + 1}: enter a valid price, or leave it blank for "Price on Request."`);
+      }
+      priceCents = Math.round(priceNaira * 100);
+    }
+
+    return { label, sku, dimensions, priceCents };
+  });
 }
 
 async function uploadNewImages(formData: FormData): Promise<string[]> {
   const files = formData.getAll("images").filter((f): f is File => f instanceof File && f.size > 0);
   return Promise.all(files.map(saveUploadedImage));
+}
+
+async function replaceVariants(productId: string, variants: VariantInput[]) {
+  await db.delete(productVariants).where(eq(productVariants.productId, productId));
+  for (const [i, v] of variants.entries()) {
+    await db.insert(productVariants).values({
+      productId,
+      label: v.label,
+      sku: v.sku,
+      dimensions: v.dimensions,
+      priceCents: v.priceCents,
+      sortOrder: i,
+    });
+  }
 }
 
 export async function createProduct(
@@ -68,6 +99,7 @@ export async function createProduct(
 
   try {
     const fields = readCommonFields(formData);
+    const variants = readVariants(formData);
     const newImages = await uploadNewImages(formData);
     if (newImages.length === 0) {
       return { error: "Add at least one image." };
@@ -78,7 +110,8 @@ export async function createProduct(
       return Boolean(existing);
     });
 
-    await db.insert(products).values({ ...fields, slug, images: newImages });
+    const [created] = await db.insert(products).values({ ...fields, slug, images: newImages }).returning();
+    await replaceVariants(created.id, variants);
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Something went wrong." };
   }
@@ -100,6 +133,7 @@ export async function updateProduct(
     if (!existing) return { error: "Product not found." };
 
     const fields = readCommonFields(formData);
+    const variants = readVariants(formData);
     const keepImages = formData.getAll("keepImages").map(String);
     const newImages = await uploadNewImages(formData);
     const images = [...keepImages, ...newImages];
@@ -113,6 +147,7 @@ export async function updateProduct(
       .update(products)
       .set({ ...fields, images, updatedAt: new Date() })
       .where(eq(products.id, id));
+    await replaceVariants(id, variants);
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Something went wrong." };
   }

@@ -20,15 +20,7 @@ export const products = sqliteTable("products", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   category: text("category").notNull(),
-  // Stored as integer kobo (1 Naira = 100 kobo) to avoid float rounding —
-  // Naira is the canonical currency (the real supplier catalog's own
-  // pricing); USD is a converted display option only, see Price.tsx.
-  // Nullable: a product can be listed before its price is finalized —
-  // the shop shows "Price on Request" and routes to an enquiry instead.
-  priceCents: integer("price_cents"),
   material: text("material").notNull(),
-  dimensions: text("dimensions").notNull(),
-  sku: text("sku").notNull(),
   status: text("status", { enum: ["available", "preorder", "sold-out"] })
     .notNull()
     .default("available"),
@@ -41,6 +33,26 @@ export const products = sqliteTable("products", {
   updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
+});
+
+// A product with only one size still gets exactly one variant — it's the
+// only purchase option, just not shown as a picker (see shop/[slug]).
+export const productVariants = sqliteTable("product_variants", {
+  id: id(),
+  productId: text("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  // e.g. "Small", "Large", "High" — blank for a product with one variant.
+  label: text("label").notNull().default(""),
+  sku: text("sku").notNull().unique(),
+  dimensions: text("dimensions").notNull(),
+  // Stored as integer kobo (1 Naira = 100 kobo) to avoid float rounding —
+  // Naira is the canonical currency (the real supplier catalog's own
+  // pricing); USD is a converted display option only, see Price.tsx.
+  // Nullable: a variant can be listed before its price is finalized — the
+  // shop shows "Price on Request" and routes to an enquiry instead.
+  priceCents: integer("price_cents"),
+  sortOrder: integer("sort_order").notNull().default(0),
 });
 
 export const posts = sqliteTable("posts", {
@@ -100,6 +112,8 @@ export const contactMessages = sqliteTable("contact_messages", {
 
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
+export type ProductVariant = typeof productVariants.$inferSelect;
+export type NewProductVariant = typeof productVariants.$inferInsert;
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 export type Project = typeof projects.$inferSelect;

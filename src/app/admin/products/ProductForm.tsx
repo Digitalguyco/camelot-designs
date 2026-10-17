@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { productCategories } from "@/lib/content";
-import type { Product } from "@/lib/data/products";
+import type { ProductWithVariants } from "@/lib/data/products";
 import type { ProductFormState } from "./actions";
 
 const STATUS_OPTIONS: { value: "available" | "preorder" | "sold-out"; label: string }[] = [
@@ -13,20 +13,44 @@ const STATUS_OPTIONS: { value: "available" | "preorder" | "sold-out"; label: str
 
 const initialState: ProductFormState = {};
 
+type VariantRow = { key: string; label: string; sku: string; dimensions: string; price: string };
+
+let nextKey = 0;
+function emptyVariant(): VariantRow {
+  return { key: `new-${nextKey++}`, label: "", sku: "", dimensions: "", price: "" };
+}
+
 export default function ProductForm({
   action,
   product,
   submitLabel,
 }: {
   action: (prev: ProductFormState, formData: FormData) => Promise<ProductFormState>;
-  product?: Product;
+  product?: ProductWithVariants;
   submitLabel: string;
 }) {
   const [state, formAction, pending] = useActionState(action, initialState);
   const [keepImages, setKeepImages] = useState<string[]>(product?.images ?? []);
+  const [variants, setVariants] = useState<VariantRow[]>(
+    product && product.variants.length > 0
+      ? product.variants.map((v) => ({
+          key: v.id,
+          label: v.label,
+          sku: v.sku,
+          dimensions: v.dimensions,
+          price: v.priceCents != null ? (v.priceCents / 100).toFixed(2) : "",
+        }))
+      : [emptyVariant()],
+  );
+
+  function updateVariant(key: string, field: keyof Omit<VariantRow, "key">, value: string) {
+    setVariants((rows) => rows.map((r) => (r.key === key ? { ...r, [field]: value } : r)));
+  }
 
   return (
     <form action={formAction} className="space-y-6 max-w-xl">
+      <input type="hidden" name="variants" value={JSON.stringify(variants)} />
+
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" name="name" defaultValue={product?.name} required />
         <div>
@@ -46,20 +70,7 @@ export default function ProductForm({
             ))}
           </select>
         </div>
-        <Field
-          label="Price (₦ Naira) — leave blank for “Price on Request”"
-          name="price"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="e.g. 326000"
-          defaultValue={
-            product?.priceCents != null ? (product.priceCents / 100).toFixed(2) : undefined
-          }
-        />
-        <Field label="SKU" name="sku" defaultValue={product?.sku} required />
         <Field label="Material" name="material" defaultValue={product?.material} required />
-        <Field label="Dimensions" name="dimensions" defaultValue={product?.dimensions} required />
       </div>
 
       <div>
@@ -92,6 +103,59 @@ export default function ProductForm({
           required
           className="field mt-2 w-full px-4 py-3 text-sm leading-relaxed"
         />
+      </div>
+
+      <div>
+        <p className="tag text-ink/60">
+          Purchase options — one row per size/variant. Leave Price blank for “Price on Request.”
+        </p>
+        <div className="mt-3 space-y-4">
+          {variants.map((row, i) => (
+            <div key={row.key} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2 items-end">
+              <MiniField
+                label="Label"
+                value={row.label}
+                onChange={(v) => updateVariant(row.key, "label", v)}
+                placeholder="Small"
+              />
+              <MiniField
+                label="SKU"
+                value={row.sku}
+                onChange={(v) => updateVariant(row.key, "sku", v)}
+                placeholder="M-001"
+              />
+              <MiniField
+                label="Dimensions"
+                value={row.dimensions}
+                onChange={(v) => updateVariant(row.key, "dimensions", v)}
+                placeholder="24 x 23 x 54 cm"
+              />
+              <MiniField
+                label="Price (₦)"
+                value={row.price}
+                onChange={(v) => updateVariant(row.key, "price", v)}
+                placeholder="326000"
+                type="number"
+              />
+              <button
+                type="button"
+                onClick={() => setVariants((rows) => rows.filter((r) => r.key !== row.key))}
+                disabled={variants.length === 1}
+                className="tag text-red-400/80 hover:text-red-400 transition-colors disabled:opacity-30 disabled:hover:text-red-400/80 pb-3"
+                aria-label={`Remove variant ${i + 1}`}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setVariants((rows) => [...rows, emptyVariant()])}
+          className="btn-outline mt-4 px-4 py-2 text-xs"
+        >
+          + Add purchase option
+        </button>
       </div>
 
       {product && keepImages.length > 0 && (
@@ -150,18 +214,12 @@ function Field({
   defaultValue,
   required,
   type = "text",
-  step,
-  min,
-  placeholder,
 }: {
   label: string;
   name: string;
   defaultValue?: string;
   required?: boolean;
   type?: string;
-  step?: string;
-  min?: string;
-  placeholder?: string;
 }) {
   return (
     <div>
@@ -172,12 +230,38 @@ function Field({
         id={name}
         name={name}
         type={type}
-        step={step}
-        min={min}
-        placeholder={placeholder}
         defaultValue={defaultValue}
         required={required}
         className="field mt-2 w-full px-4 py-3 text-sm"
+      />
+    </div>
+  );
+}
+
+function MiniField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+}) {
+  return (
+    <div>
+      <span className="tag text-ink/50 text-[10px]">{label}</span>
+      <input
+        type={type}
+        step={type === "number" ? "0.01" : undefined}
+        min={type === "number" ? "0" : undefined}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="field mt-1 w-full px-3 py-2 text-sm"
       />
     </div>
   );
