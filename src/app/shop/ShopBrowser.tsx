@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import type { Product } from "@/lib/data/products";
+import type { ProductWithVariants } from "@/lib/data/products";
 
 const PAGE_SIZE = 24;
 
-export default function ShopBrowser({ products }: { products: Product[] }) {
+export default function ShopBrowser({ products }: { products: ProductWithVariants[] }) {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const gridTopRef = useRef<HTMLDivElement>(null);
