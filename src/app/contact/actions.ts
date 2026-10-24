@@ -17,9 +17,12 @@ async function notifyByEmail(fields: { name: string; email: string; phone: strin
   if (!SMTP_HOST || !CONTACT_NOTIFY_EMAIL) return;
 
   try {
+    const port = Number(SMTP_PORT) || 587;
     const transport = nodemailer.createTransport({
       host: SMTP_HOST,
-      port: Number(SMTP_PORT) || 587,
+      port,
+      // 465 is implicit TLS (e.g. Zoho's smtp.zoho.com:465); 587 upgrades via STARTTLS.
+      secure: port === 465,
       auth: SMTP_USER ? { user: SMTP_USER, pass: SMTP_PASSWORD } : undefined,
     });
     await transport.sendMail({
