@@ -55,7 +55,8 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <CurrencyToggle />
+            {/* Prices only appear in the shop, so the switch lives there too. */}
+            {pathname.startsWith("/shop") && <CurrencyToggle />}
             <Link href="/contact" className="hidden md:inline-block shrink-0 btn-outline px-4 py-2 text-xs">
               Enquire
             </Link>
