@@ -12,6 +12,29 @@ function statusRank(p: Pick<Product, "status">) {
   return p.status === "sold-out" ? 2 : p.status === "preorder" ? 1 : 0;
 }
 
+// Spreads each material evenly through the list (glass, ceramic, glass,
+// mixed, …) instead of leaving whole imports in one block. Each product is
+// placed at its relative position within its own material, so a material
+// with 3× the pieces appears 3× as often, but never all at once. Assumes
+// `rows` is already newest-first and keeps that order within a material.
+function mixByMaterial(rows: Product[]): Product[] {
+  const byMaterial = new Map<string, Product[]>();
+  for (const r of rows) {
+    const list = byMaterial.get(r.material) ?? [];
+    list.push(r);
+    byMaterial.set(r.material, list);
+  }
+  const placed: { row: Product; at: number }[] = [];
+  for (const list of byMaterial.values()) {
+    list.forEach((row, i) => placed.push({ row, at: (i + 0.5) / list.length }));
+  }
+  return placed.sort((a, b) => a.at - b.at).map((p) => p.row);
+}
+
+function displayOrder(rows: Product[]): Product[] {
+  return [0, 1, 2].flatMap((rank) => mixByMaterial(rows.filter((r) => statusRank(r) === rank)));
+}
+
 async function attachVariants(rows: Product[]): Promise<ProductWithVariants[]> {
   if (rows.length === 0) return [];
   const ids = rows.map((r) => r.id);
@@ -32,8 +55,7 @@ async function attachVariants(rows: Product[]): Promise<ProductWithVariants[]> {
 
 export async function getAllProducts(): Promise<ProductWithVariants[]> {
   const rows = await db.select().from(products).orderBy(desc(products.createdAt));
-  const sorted = [...rows].sort((a, b) => statusRank(a) - statusRank(b));
-  return attachVariants(sorted);
+  return attachVariants(displayOrder(rows));
 }
 
 export async function getProductsByCategory(category: string): Promise<ProductWithVariants[]> {
@@ -42,8 +64,7 @@ export async function getProductsByCategory(category: string): Promise<ProductWi
     .from(products)
     .where(eq(products.category, category))
     .orderBy(desc(products.createdAt));
-  const sorted = [...rows].sort((a, b) => statusRank(a) - statusRank(b));
-  return attachVariants(sorted);
+  return attachVariants(displayOrder(rows));
 }
 
 // The shop's front page shows one tile per category that actually has

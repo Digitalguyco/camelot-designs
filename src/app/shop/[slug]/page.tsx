@@ -93,7 +93,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           <p className="mt-6 text-ink/70 leading-relaxed max-w-md">{product.description}</p>
 
-          <VariantPicker variants={product.variants} material={product.material} status={product.status} />
+          <VariantPicker slug={product.slug} variants={product.variants} material={product.material} status={product.status} />
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { site } from "@/lib/content";
-import ContactForm from "./ContactForm";
+import ContactForm, { type EnquiryProduct } from "./ContactForm";
+import { getProductBySlug } from "@/lib/data/products";
 import SocialLinks from "@/components/SocialLinks";
 
 const description =
@@ -14,16 +15,34 @@ export const metadata: Metadata = {
   openGraph: { title: `Contact — ${site.name}`, description, url: "/contact" },
 };
 
-export default function Contact() {
+export default async function Contact({
+  searchParams,
+}: {
+  searchParams: Promise<{ product?: string; option?: string }>;
+}) {
+  // A shop item's Enquire button links here with ?product=<slug>, which
+  // switches the form to a product enquiry with delivery details.
+  const { product: slug, option } = await searchParams;
+  const found = slug ? await getProductBySlug(slug) : undefined;
+  const product: EnquiryProduct | undefined = found && {
+    slug: found.slug,
+    name: found.name,
+    image: found.images[0],
+    option: option && found.variants.some((v) => (v.label || v.sku) === option) ? option : "",
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-20">
       <div className="grid gap-14 md:grid-cols-2">
         <div>
           <p className="eyebrow">Contact</p>
-          <h1 className="font-serif text-4xl sm:text-5xl mt-2">Let&apos;s Meet</h1>
+          <h1 className="font-serif text-4xl sm:text-5xl mt-2">
+            {product ? "Enquire to Purchase" : "Let\u2019s Meet"}
+          </h1>
           <p className="mt-4 text-ink/70 max-w-md leading-relaxed">
-            Tell us a little about your project and we&apos;ll be in touch to schedule a
-            consultation.
+            {product
+              ? "Share your delivery details and we\u2019ll confirm availability, pricing and delivery for this piece."
+              : "Tell us a little about your project and we\u2019ll be in touch to schedule a consultation."}
           </p>
 
           <dl className="mt-8 space-y-4 border-t hairline pt-6 text-sm max-w-xs">
@@ -53,7 +72,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <ContactForm />
+        <ContactForm product={product} />
       </div>
     </div>
   );

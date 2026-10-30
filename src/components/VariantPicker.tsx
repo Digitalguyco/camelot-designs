@@ -6,16 +6,23 @@ import type { ProductVariant } from "@/lib/data/products";
 import Price from "@/components/Price";
 
 export default function VariantPicker({
+  slug,
   variants,
   material,
   status,
 }: {
+  slug: string;
   variants: ProductVariant[];
   material: string;
   status: "available" | "preorder" | "sold-out";
 }) {
   const [selectedId, setSelectedId] = useState(variants[0]?.id);
   const selected = variants.find((v) => v.id === selectedId) ?? variants[0];
+
+  // Opens the contact page's product-enquiry form (delivery details) for
+  // this piece and the option currently selected.
+  const option = variants.length > 1 ? selected.label || selected.sku : "";
+  const enquireHref = `/contact?${new URLSearchParams({ product: slug, ...(option && { option }) })}`;
 
   const soldOut = status === "sold-out";
   const preorder = status === "preorder";
@@ -69,7 +76,7 @@ export default function VariantPicker({
             </span>
             <p className="mt-3 text-sm text-ink/65">
               Want to know when this returns?{" "}
-              <Link href="/contact" className="text-gold hover:underline">
+              <Link href={enquireHref} className="text-gold hover:underline">
                 Join the waitlist
               </Link>
               .
@@ -77,7 +84,7 @@ export default function VariantPicker({
           </div>
         ) : preorder ? (
           <div>
-            <Link href="/contact" className="btn-primary inline-block px-6 py-3 text-sm tracking-wide">
+            <Link href={enquireHref} className="btn-primary inline-block px-6 py-3 text-sm tracking-wide">
               Reserve a Pre-Order
             </Link>
             <p className="mt-3 text-sm text-ink/65">
@@ -86,7 +93,7 @@ export default function VariantPicker({
             </p>
           </div>
         ) : (
-          <Link href="/contact" className="btn-primary inline-block px-6 py-3 text-sm tracking-wide">
+          <Link href={enquireHref} className="btn-primary inline-block px-6 py-3 text-sm tracking-wide">
             Enquire to Purchase
           </Link>
         )}
